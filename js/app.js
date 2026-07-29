@@ -60,7 +60,10 @@
     const filmStripHtml = trips.map((item, index) => `
       <div class="fw-frame" style="--r:${index % 2 === 0 ? '-2deg' : '2deg'}">
         <div class="fw-clip"></div><div class="fw-string"></div>
-        <img class="fw-frame-photo" src="${item.photo}" alt="${esc(item.title)}" />
+        <button type="button" class="fw-frame-photo-btn" data-action="open-photo" data-src="${item.photo}" data-alt="${esc(item.title)}">
+          <img class="fw-frame-photo" src="${item.photo}" alt="${esc(item.title)}" />
+          <div class="fw-tag">NO.${String(index + 1).padStart(2, '0')}</div>
+        </button>
         <div class="fw-cap">${item.title}</div>
       </div>
     `).join('');
@@ -75,7 +78,7 @@
       <div class="tl-year"><div class="tl-year-node"><img src="${CAMERA_ICON}" alt="" /></div><div class="tl-year-label num-hand">${group.year}</div></div>
       ${group.items.map((item) => `
         <button type="button" class="tl-film-card" data-action="open-trip" data-trip-id="${item.id}">
-          <div class="tl-film-photo"><img src="${item.photo}" alt="${esc(item.title)}" /><div class="tl-film-tag">NO.${String(trips.indexOf(item) + 1).padStart(2, '0')}</div></div>
+          <div class="tl-film-photo"><img src="${item.photo}" alt="${esc(item.title)}" /></div>
           <div class="tl-film-body">
             <div class="tl-film-title">${item.title}</div>
             <div class="tl-film-route">${item.route}</div>
@@ -87,7 +90,7 @@
 
     return `
       <div class="scr-page">
-        <div class="scr-section-title">✦ 冲印出来的回忆</div>
+        <div class="scr-section-title">✦ 我们一起走过的回忆</div>
         <div class="fw-strip">${filmStripHtml}</div>
         <div class="scr-stats">${statsHtml}</div>
         <div class="scr-section-title" style="margin-top:30px;">✦ 我的旅程</div>
@@ -313,6 +316,14 @@
     `);
   }
 
+  function openPhotoLightbox(src, alt) {
+    const overlay = document.createElement('div');
+    overlay.className = 'scr-lightbox-overlay';
+    overlay.innerHTML = `<img class="scr-lightbox-img" src="${src}" alt="${esc(alt)}" />`;
+    overlay.addEventListener('click', () => overlay.remove());
+    document.body.appendChild(overlay);
+  }
+
   function openTripPicker() {
     openModal(`
       <div class="scr-modal-title">切换旅程 ✦</div>
@@ -337,6 +348,7 @@
     else if (action === 'toggle-guide') { const id = target.dataset.id; state.activeGuideId = state.activeGuideId === id ? '' : id; render(); }
     else if (action === 'show-stat') showStatModal(target.dataset.statId);
     else if (action === 'open-trip-picker') openTripPicker();
+    else if (action === 'open-photo') openPhotoLightbox(target.dataset.src, target.dataset.alt);
   });
 
   render();
