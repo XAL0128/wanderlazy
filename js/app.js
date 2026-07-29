@@ -26,26 +26,32 @@
       { id: 'spending', icon: 'assets/icons/wallet.svg', label: '花销' },
       { id: 'guide', icon: 'assets/icons/guide.svg', label: '攻略' }
     ];
-    return `<view class="tabbar">${tabs.map((tab) => `
-      <div class="tab-item ${state.activeTab === tab.id ? 'tab-active' : ''}" data-action="switch-tab" data-tab="${tab.id}">
+    return `<nav class="tabbar" aria-label="主导航">${tabs.map((tab) => `
+      <button type="button" class="tab-item ${state.activeTab === tab.id ? 'tab-active' : ''}" data-action="switch-tab" data-tab="${tab.id}" aria-current="${state.activeTab === tab.id ? 'page' : 'false'}">
         <img class="tab-icon" src="${tab.icon}" alt="" />
         <span>${tab.label}</span>
-      </div>
-    `).join('')}</view>`;
+      </button>
+    `).join('')}</nav>`;
   }
 
   function renderFootprints() {
-    const statsHtml = footprintStats.map((item) => `
-      <div class="stat-item ${item.interactive ? 'stat-item-interactive' : ''}" ${item.interactive ? `data-action="show-stat" data-stat-id="${item.id}"` : ''}>
+    const statsHtml = footprintStats.map((item) => item.interactive ? `
+      <button type="button" class="stat-item stat-item-interactive" data-action="show-stat" data-stat-id="${item.id}">
         <img class="stat-icon" src="${item.icon}" alt="" />
         <span class="stat-number">${item.value}</span>
         <span class="stat-label">${item.label}</span>
-        ${item.interactive ? '<span class="stat-disclosure">&rsaquo;</span>' : ''}
+        <span class="stat-disclosure">&rsaquo;</span>
+      </button>
+    ` : `
+      <div class="stat-item">
+        <img class="stat-icon" src="${item.icon}" alt="" />
+        <span class="stat-number">${item.value}</span>
+        <span class="stat-label">${item.label}</span>
       </div>
     `).join('');
 
     const tripsHtml = trips.map((item) => `
-      <div class="trip-card" data-action="open-trip" data-trip-id="${item.id}">
+      <button type="button" class="trip-card" data-action="open-trip" data-trip-id="${item.id}">
         <div class="trip-visual"><img class="trip-photo" src="${item.photo}" alt="${esc(item.title)}" /></div>
         <div class="trip-details">
           <div class="trip-badge">${item.title}</div>
@@ -53,7 +59,7 @@
           <div class="trip-meta"><img class="trip-date-icon" src="assets/icons/calendar.svg" alt="" /><span class="numeric-text">${item.year}.${item.startDate} — ${item.endDate}</span></div>
           <div class="trip-action">查看行程 <span>&rsaquo;</span></div>
         </div>
-      </div>
+      </button>
     `).join('');
 
     return `
@@ -84,7 +90,7 @@
         </div>
         <span class="section-note">持续更新</span>
       </div>
-      ${tripsHtml}
+      <div class="trip-grid">${tripsHtml}</div>
     `;
   }
 
@@ -95,19 +101,19 @@
     const atEnd = state.dayIndex === days.length - 1;
     return `
       <div class="date-navigator">
-        <div class="date-nav-arrow ${atStart ? 'date-nav-arrow-disabled' : ''}" data-action="date-prev"><span>&lsaquo;</span></div>
+        <button type="button" class="date-nav-arrow ${atStart ? 'date-nav-arrow-disabled' : ''}" data-action="date-prev" ${atStart ? 'disabled' : ''} aria-label="前一天"><span aria-hidden="true">&lsaquo;</span></button>
         <div class="date-rail" id="date-rail">
           <div class="date-rail-inner">
             ${days.map((day) => `
-              <div class="date-chip ${day.index === state.dayIndex ? 'date-chip-active' : ''}" data-action="select-day" data-index="${day.index}">
+              <button type="button" class="date-chip ${day.index === state.dayIndex ? 'date-chip-active' : ''}" data-action="select-day" data-index="${day.index}" aria-current="${day.index === state.dayIndex ? 'true' : 'false'}">
                 <span class="date-chip-day">DAY <span class="numeric-text">${day.dayLabel}</span></span>
                 <span class="date-chip-date">${day.date}</span>
                 <span class="date-chip-city">${day.dateCity}</span>
-              </div>
+              </button>
             `).join('')}
           </div>
         </div>
-        <div class="date-nav-arrow ${atEnd ? 'date-nav-arrow-disabled' : ''}" data-action="date-next"><span>&rsaquo;</span></div>
+        <button type="button" class="date-nav-arrow ${atEnd ? 'date-nav-arrow-disabled' : ''}" data-action="date-next" ${atEnd ? 'disabled' : ''} aria-label="后一天"><span aria-hidden="true">&rsaquo;</span></button>
       </div>
     `;
   }
@@ -141,20 +147,22 @@
 
     return `
       <div class="page-heading itinerary-heading">
-        <div class="itinerary-title-choice" data-action="open-trip-picker">
-          <div class="page-title">${trip.title}</div>
+        <button type="button" class="itinerary-title-choice" data-action="open-trip-picker">
+          <span class="page-title">${trip.title}</span>
           <img class="itinerary-title-arrow" src="assets/icons/chevron-down.svg" alt="" />
-        </div>
+        </button>
         <div class="itinerary-duration"><span class="numeric-text">${trip.duration}</span></div>
       </div>
       ${renderDateRail()}
-      <div class="overview-card">
-        <div class="card-label"><span>&#10022;</span> 行程总览</div>
-        <div class="overview-main">${esc(day.title)}</div>
-        <div class="overview-copy">${esc(day.summary)}</div>
-        <div class="overview-tags">${tagsHtml}</div>
+      <div class="day-summary-grid">
+        <div class="overview-card">
+          <div class="card-label"><span>&#10022;</span> 行程总览</div>
+          <div class="overview-main">${esc(day.title)}</div>
+          <div class="overview-copy">${esc(day.summary)}</div>
+          <div class="overview-tags">${tagsHtml}</div>
+        </div>
+        ${hotelHtml}
       </div>
-      ${hotelHtml}
       <div class="timeline-card">
         <div class="section-heading timeline-heading"><div class="timeline-heading-label"><img class="timeline-heading-icon" src="assets/icons/folded-map.svg" alt="" /><span>今日安排</span></div></div>
         ${timelineHtml}
@@ -169,14 +177,14 @@
 
     const budgetHtml = summary.expenses.map((category) => `
       <div class="budget-group">
-        <div class="budget-row ${state.activeExpenseId === category.id ? 'budget-row-active' : ''}" data-action="toggle-expense" data-id="${category.id}">
+        <button type="button" class="budget-row ${state.activeExpenseId === category.id ? 'budget-row-active' : ''}" data-action="toggle-expense" data-id="${category.id}" aria-expanded="${state.activeExpenseId === category.id ? 'true' : 'false'}">
           <div class="budget-icon"><img class="budget-icon-image" src="${category.icon}" alt="" /></div>
           <div class="budget-body">
             <div class="budget-title"><span>${category.name}</span>${category.pending ? '<span>待补充</span>' : `<span class="numeric-text">¥ ${category.amountLabel}</span>`}</div>
             <div class="budget-bar"><div class="budget-bar-fill" style="width: ${category.width}%; background: ${category.color};"></div></div>
           </div>
-          <span class="budget-chevron ${state.activeExpenseId === category.id ? 'budget-chevron-open' : ''}">&rsaquo;</span>
-        </div>
+          <span class="budget-chevron ${state.activeExpenseId === category.id ? 'budget-chevron-open' : ''}" aria-hidden="true">&rsaquo;</span>
+        </button>
         ${state.activeExpenseId === category.id ? `
           <div class="budget-detail">
             ${category.details.map((detail) => `
@@ -219,10 +227,10 @@
 
   function renderTripPicker() {
     return `
-      <div class="expense-trip-picker" data-action="open-trip-picker">
+      <button type="button" class="expense-trip-picker" data-action="open-trip-picker">
         <span class="expense-trip-picker-label">${currentTrip().title}</span>
         <img class="expense-trip-picker-arrow" src="assets/icons/chevron-down.svg" alt="" />
-      </div>
+      </button>
     `;
   }
 
@@ -230,7 +238,7 @@
     const trip = currentTrip();
     const guides = guidesByTrip[trip.id];
     const cardsHtml = guides.map((item) => `
-      <div class="guide-card ${item.theme} ${state.activeGuideId === item.id ? 'guide-card-open' : ''}" data-action="toggle-guide" data-id="${item.id}">
+      <button type="button" class="guide-card ${item.theme} ${state.activeGuideId === item.id ? 'guide-card-open' : ''}" data-action="toggle-guide" data-id="${item.id}" aria-expanded="${state.activeGuideId === item.id ? 'true' : 'false'}">
         <div class="guide-card-main">
           <div class="guide-copy">
             <div class="guide-title-row">
@@ -249,7 +257,7 @@
             ${item.details.map((detail) => `<div class="guide-detail-row"><span class="guide-detail-mark">&#10022;</span><span class="guide-detail-text">${esc(detail)}</span></div>`).join('')}
           </div>
         ` : ''}
-      </div>
+      </button>
     `).join('');
 
     return `
@@ -257,7 +265,7 @@
         <div class="page-title">攻略</div>
         ${renderTripPicker()}
       </div>
-      ${cardsHtml}
+      <div class="guide-grid">${cardsHtml}</div>
     `;
   }
 
@@ -299,10 +307,10 @@
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     overlay.innerHTML = `
-      <div class="modal-card">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-label="足迹">
         <div class="modal-title">足迹</div>
         <div class="modal-body">${esc(item.detail).replace(/\n/g, '<br />')}</div>
-        <div class="modal-confirm" data-action="close-modal">知道了</div>
+        <button type="button" class="modal-confirm" data-action="close-modal">知道了</button>
       </div>
     `;
     overlay.addEventListener('click', (e) => {
@@ -355,10 +363,10 @@
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     overlay.innerHTML = `
-      <div class="modal-card">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-label="切换旅程">
         <div class="modal-title">切换旅程</div>
-        ${trips.map((item) => `<div class="modal-option" data-trip-id="${item.id}">${item.title}</div>`).join('')}
-        <div class="modal-confirm" data-action="close-modal">取消</div>
+        ${trips.map((item) => `<button type="button" class="modal-option" data-trip-id="${item.id}">${item.title}</button>`).join('')}
+        <button type="button" class="modal-confirm" data-action="close-modal">取消</button>
       </div>
     `;
     overlay.addEventListener('click', (e) => {
