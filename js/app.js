@@ -45,15 +45,24 @@
     `;
   }
 
+  const CAMERA_ICON = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232b1b0e' stroke-width='2'><rect x='3' y='5' width='18' height='14' rx='2'/><circle cx='12' cy='12' r='4'/></svg>";
+
   function renderFootprints() {
-    const heroPhoto = trips[0].photo;
     const rotations = { countries: '-3deg', cities: '2deg', trips: '-1.5deg', days: '2.5deg' };
     const statsHtml = footprintStats.map((item) => item.interactive ? `
       <button type="button" class="stamp stamp-interactive" style="--r:${rotations[item.id] || '-2deg'}" data-action="show-stat" data-stat-id="${item.id}">
-        <b class="num">${item.value}</b><span>${item.label}</span>
+        <b class="num-hand">${item.value}</b><span>${item.label}</span>
       </button>
     ` : `
-      <div class="stamp" style="--r:${rotations[item.id] || '-2deg'}"><b class="num">${item.value}</b><span>${item.label}</span></div>
+      <div class="stamp" style="--r:${rotations[item.id] || '-2deg'}"><b class="num-hand">${item.value}</b><span>${item.label}</span></div>
+    `).join('');
+
+    const filmStripHtml = trips.map((item, index) => `
+      <div class="fw-frame" style="--r:${index % 2 === 0 ? '-2deg' : '2deg'}">
+        <div class="fw-clip"></div><div class="fw-string"></div>
+        <img class="fw-frame-photo" src="${item.photo}" alt="${esc(item.title)}" />
+        <div class="fw-cap">${item.title}</div>
+      </div>
     `).join('');
 
     const yearGroups = [];
@@ -62,31 +71,30 @@
       if (!group) { group = { year: item.year, items: [] }; yearGroups.push(group); }
       group.items.push(item);
     });
-    const tripsHtml = yearGroups.map((group) => `
-      <div class="scr-year-heading"><span class="num">${group.year}</span></div>
-      <div class="scr-cards">
-        ${group.items.map((item, index) => `
-          <button type="button" class="index-card" style="--r:${index % 2 === 0 ? '-1.5deg' : '1.5deg'}" data-action="open-trip" data-trip-id="${item.id}">
-            <div class="tape" style="background:${index % 2 === 0 ? 'var(--mustard)' : 'var(--teal)'}"></div>
-            <div class="card-note">${item === trips[0] ? '即将出发' : '已收进相册'} ✦</div>
-            <div class="card-title">${item.title}</div>
-            <div class="card-route">${item.route}</div>
-            <div class="card-date num">${item.startDate} — ${item.endDate} · ${item.duration}</div>
-          </button>
-        `).join('')}
-      </div>
+    const timelineHtml = yearGroups.map((group) => `
+      <div class="tl-year"><div class="tl-year-node"><img src="${CAMERA_ICON}" alt="" /></div><div class="tl-year-label num-hand">${group.year}</div></div>
+      ${group.items.map((item) => `
+        <button type="button" class="tl-film-card" data-action="open-trip" data-trip-id="${item.id}">
+          <div class="tl-film-photo"><img src="${item.photo}" alt="${esc(item.title)}" /><div class="tl-film-tag">NO.${String(trips.indexOf(item) + 1).padStart(2, '0')}</div></div>
+          <div class="tl-film-body">
+            <div class="tl-film-title">${item.title}</div>
+            <div class="tl-film-route">${item.route}</div>
+            <div class="tl-film-date num">${item.startDate} — ${item.endDate} · ${item.duration}</div>
+          </div>
+        </button>
+      `).join('')}
     `).join('');
 
     return `
       <div class="scr-page">
-        <div class="scr-hero">
-          <div class="pin"></div>
-          <div class="polaroid"><img class="polaroid-photo" src="${heroPhoto}" alt="" /><div class="polaroid-cap">旅行手账 · ${new Date().getFullYear()}</div></div>
-          <div class="scr-headline">我们走过<br />的每一段路</div>
-        </div>
+        <div class="scr-section-title">✦ 冲印出来的回忆</div>
+        <div class="fw-strip">${filmStripHtml}</div>
         <div class="scr-stats">${statsHtml}</div>
-        <div class="scr-section-title">✦ 我的旅程</div>
-        ${tripsHtml}
+        <div class="scr-section-title" style="margin-top:30px;">✦ 我的旅程</div>
+        <div class="tl-wrap">
+          <div class="tl-line"></div>
+          ${timelineHtml}
+        </div>
       </div>
     `;
   }

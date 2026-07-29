@@ -5,6 +5,13 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: 'Kalam Sub';
+  src: url('../assets/fonts/kalam-digits-subset.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --bg: #e9dab9;
@@ -17,10 +24,16 @@
   --muted: #6a5432;
   --font-hand: 'Zhi Mang Xing Sub', Georgia, "Songti SC", serif;
   --font-num: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --font-num-hand: 'Kalam Sub', Georgia, "Songti SC", serif;
 }
 
 .num {
   font-family: var(--font-num);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.num-hand {
+  font-family: var(--font-num-hand);
   font-variant-numeric: lining-nums tabular-nums;
 }
 
@@ -48,7 +61,7 @@ body {
   .app-shell { min-height: calc(100vh - 56px); box-shadow: 0 24px 60px rgba(30, 20, 8, .28); }
 }
 
-button, .index-card, .stamp-interactive, .scr-daystub, .scr-budget-row, .scr-guide-card,
+button, .tl-film-card, .stamp-interactive, .scr-daystub, .scr-budget-row, .scr-guide-card,
 .scr-trip-picker, .scr-rail-arrow, .scr-modal-option, .scr-modal-confirm, .scr-links button {
   font-family: inherit;
 }
@@ -68,16 +81,9 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .scr-page { padding: 0 44px 70px; }
 
 /* ===== Footprints ===== */
-.scr-hero { position: relative; min-height: 300px; margin-bottom: 26px; }
-.polaroid { position: absolute; top: 0; left: 0; width: 260px; background: #fffdf8; padding: 12px 12px 44px; box-shadow: 0 14px 28px rgba(43,27,14,.25); transform: rotate(-4deg); }
-.polaroid-photo { width: 100%; height: 190px; object-fit: cover; }
-.polaroid-cap { font-family: var(--font-hand); font-size: 17px; margin-top: 10px; color: #4a3a24; text-align: center; }
-.pin { position: absolute; top: -6px; left: 122px; width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #e6786a, #a8342a); box-shadow: 0 3px 5px rgba(0,0,0,.3); z-index: 2; }
-.scr-headline { position: absolute; right: 10px; top: 60px; width: 300px; font-family: var(--font-hand); font-size: 38px; line-height: 1.4; color: #3a2a17; transform: rotate(2deg); }
-
 .scr-stats { display: flex; justify-content: center; gap: 18px; margin: 10px 0 34px; flex-wrap: wrap; }
 .stamp { all: unset; box-sizing: border-box; background: var(--card); padding: 14px 18px; text-align: center; border: 2px dashed #c9ab6f; transform: rotate(var(--r, -2deg)); box-shadow: 0 6px 14px rgba(43,27,14,.14); display: block; }
-.stamp b { display: block; font-size: 24px; }
+.stamp b { display: block; font-size: 26px; }
 .stamp span { font-size: 11px; color: var(--muted); font-family: -apple-system, sans-serif; }
 .stamp-interactive { cursor: pointer; }
 @media (hover: hover) and (pointer: fine) {
@@ -85,18 +91,35 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 }
 
 .scr-section-title { font-size: 15px; margin: 0 0 16px; color: #4a3a24; }
-.scr-year-heading { font-family: Georgia, serif; font-size: 26px; font-weight: 700; color: var(--ink); margin: 30px 0 16px; }
-.scr-year-heading:first-of-type { margin-top: 6px; }
-.scr-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-.index-card { all: unset; box-sizing: border-box; position: relative; display: block; width: 100%; background: var(--card); padding: 20px 22px 22px; box-shadow: 0 10px 22px rgba(43,27,14,.16); transform: rotate(var(--r, -1.5deg)); cursor: pointer; text-align: left; }
-.tape { position: absolute; top: -10px; left: 26px; width: 78px; height: 26px; opacity: .85; transform: rotate(-6deg); }
-.card-note { font-family: var(--font-hand); font-size: 15px; color: var(--red); margin-bottom: 8px; }
-.card-title { font-size: 21px; font-weight: 700; margin: 0 0 6px; }
-.card-route { font-size: 14px; margin-bottom: 10px; }
-.card-date { font-family: -apple-system, sans-serif; font-size: 12px; color: var(--muted); }
+
+/* Hanging film-strip hero */
+.fw-strip { display: flex; gap: 24px; padding: 30px 0 16px; overflow-x: auto; }
+.fw-frame { flex: 0 0 200px; background: #fffdf8; padding: 8px 8px 8px; box-shadow: 0 12px 24px rgba(43,27,14,.2); position: relative; transform: rotate(var(--r, -2deg)); }
+.fw-frame-photo { width: 100%; height: 140px; object-fit: cover; }
+.fw-clip { position: absolute; top: -14px; left: 50%; margin-left: -9px; width: 18px; height: 26px; background: #8a7355; border-radius: 3px; box-shadow: 0 3px 5px rgba(0,0,0,.25); }
+.fw-string { position: absolute; top: -2px; left: 0; right: 0; height: 2px; background: #8a7355; z-index: -1; }
+.fw-cap { text-align: center; font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 11px; color: var(--red); margin-top: 8px; }
+
+/* Timeline x film cards */
+.tl-wrap { position: relative; padding-left: 40px; margin-top: 10px; }
+.tl-line { position: absolute; left: 14px; top: 8px; bottom: 8px; width: 2px; background: repeating-linear-gradient(#c9ab6f 0 6px, transparent 6px 12px); }
+.tl-year { position: relative; display: flex; align-items: center; gap: 12px; margin: 34px 0 20px; }
+.tl-year:first-child { margin-top: 0; }
+.tl-year-node { position: absolute; left: -40px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+.tl-year-node img { width: 22px; height: 22px; }
+.tl-year-label { font-size: 26px; font-weight: 700; }
+.tl-film-card { all: unset; box-sizing: border-box; position: relative; display: flex; width: 100%; background: var(--card); box-shadow: 0 10px 22px rgba(43,27,14,.16); overflow: hidden; margin-bottom: 24px; transform: rotate(var(--r, -.6deg)); cursor: pointer; text-align: left; }
+.tl-film-card::before { content: ""; position: absolute; left: -33px; top: 26px; width: 14px; height: 14px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 4px var(--bg); z-index: 2; }
+.tl-film-photo { width: 150px; flex: none; position: relative; }
+.tl-film-photo img { width: 100%; height: 100%; object-fit: cover; }
+.tl-film-tag { position: absolute; bottom: 8px; left: 8px; font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 11px; color: #fbf3e1; background: rgba(43,27,14,.7); padding: 2px 8px; border-radius: 2px; }
+.tl-film-body { padding: 16px 18px; min-width: 0; }
+.tl-film-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.tl-film-route { font-size: 14px; margin-bottom: 8px; }
+.tl-film-date { font-family: -apple-system, sans-serif; font-size: 12px; color: var(--muted); }
 @media (hover: hover) and (pointer: fine) {
-  .index-card { transition: transform .18s ease, box-shadow .18s ease; }
-  .index-card:hover { box-shadow: 0 16px 30px rgba(43,27,14,.22); }
+  .tl-film-card { transition: transform .18s ease, box-shadow .18s ease; }
+  .tl-film-card:hover { box-shadow: 0 16px 30px rgba(43,27,14,.22); }
 }
 
 /* ===== Shared: page head / trip picker ===== */
@@ -206,13 +229,15 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
   .scr-links button { font-size: 12px; }
   .scr-page { padding: 0 18px 50px; }
 
-  .scr-hero { min-height: 0; }
-  .polaroid { position: static; width: 220px; margin: 0 auto 18px; transform: rotate(-3deg); }
-  .pin { left: 50%; margin-left: -92px; top: -8px; }
-  .scr-headline { position: static; width: auto; font-size: 26px; text-align: center; transform: none; margin-bottom: 6px; }
   .scr-stats { justify-content: center; gap: 10px; }
   .stamp { padding: 10px 14px; }
-  .scr-cards { grid-template-columns: 1fr; gap: 26px; }
+  .fw-frame { flex: 0 0 160px; }
+  .fw-frame-photo { height: 110px; }
+  .tl-wrap { padding-left: 28px; }
+  .tl-year-node { left: -28px; }
+  .tl-film-card { flex-direction: column; }
+  .tl-film-card::before { left: -27px; }
+  .tl-film-photo { width: 100%; height: 130px; }
 
   .scr-trip-picker { font-size: 21px; }
   .scr-donut-card { padding: 18px 20px; gap: 20px; }
