@@ -127,8 +127,9 @@
     const tagsHtml = day.tags.map((tag) => `<span>${esc(tag)}</span>`).join('');
     const timelineHtml = day.timeline.map((item) => `
       <div class="scr-timeline-row">
-        <div class="scr-timeline-dot">${item.time}</div>
-        <div><div class="scr-timeline-title">${esc(item.title)}</div><div class="scr-timeline-note">${esc(item.note)}</div></div>
+        <div class="scr-timeline-time num">${item.time}</div>
+        <div class="scr-timeline-track"><div class="scr-timeline-dot"></div><div class="scr-timeline-line"></div></div>
+        <div class="scr-timeline-body"><div class="scr-timeline-title">${esc(item.title)}</div><div class="scr-timeline-note">${esc(item.note)}</div></div>
       </div>
     `).join('');
 
@@ -144,16 +145,18 @@
         ${renderDayRail()}
         <div class="scr-journal">
           <div class="scr-journal-tape"></div>
+          <div class="scr-card-label">✦ 行程总览</div>
           <div class="scr-journal-date num">DAY ${day.dayLabel} · ${day.date}</div>
           <div class="scr-journal-title">${esc(day.title)}</div>
           <div class="scr-journal-summary">${esc(day.summary)}</div>
           <div class="scr-tags">${tagsHtml}</div>
-          <div class="scr-timeline">${timelineHtml}</div>
         </div>
-        <div class="scr-split ${hasHotel ? '' : 'scr-split-single'}">
-          ${hotelHtml}
-          <div class="scr-sticky">☀ ${esc(day.reminder)}</div>
+        ${hotelHtml}
+        <div class="scr-timeline-card">
+          <div class="scr-card-label">✦ 今日安排</div>
+          ${timelineHtml}
         </div>
+        <div class="scr-sticky">☀ ${esc(day.reminder)}</div>
       </div>
     `;
   }
