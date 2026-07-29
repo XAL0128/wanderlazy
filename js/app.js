@@ -8,6 +8,7 @@
   };
 
   const root = document.getElementById('app');
+  let dayStep = null;
 
   function currentTrip() {
     return trips[state.tripIndex];
@@ -19,101 +20,80 @@
     }[c]));
   }
 
-  function renderTabbar() {
+  const BUDGET_COLORS = {
+    accommodation: '#b23a2e',
+    transport: '#3e7a6b',
+    activities: '#d9a441',
+    food: '#c9ab6f',
+    shopping: '#9a8a6a'
+  };
+
+  function renderNav() {
     const tabs = [
-      { id: 'footprints', icon: 'assets/icons/journey-footmark.svg', label: '足迹' },
-      { id: 'itinerary', icon: 'assets/icons/calendar.svg', label: '行程' },
-      { id: 'spending', icon: 'assets/icons/wallet.svg', label: '花销' },
-      { id: 'guide', icon: 'assets/icons/guide.svg', label: '攻略' }
+      { id: 'footprints', label: '足迹' },
+      { id: 'itinerary', label: '行程' },
+      { id: 'spending', label: '花销' },
+      { id: 'guide', label: '攻略' }
     ];
-    return `<nav class="tabbar" aria-label="主导航">${tabs.map((tab) => `
-      <button type="button" class="tab-item ${state.activeTab === tab.id ? 'tab-active' : ''}" data-action="switch-tab" data-tab="${tab.id}" aria-current="${state.activeTab === tab.id ? 'page' : 'false'}">
-        <img class="tab-icon" src="${tab.icon}" alt="" />
-        <span>${tab.label}</span>
-      </button>
-    `).join('')}</nav>`;
-  }
-
-  function renderFootprints() {
-    const statsHtml = footprintStats.map((item) => item.interactive ? `
-      <button type="button" class="stat-item stat-item-interactive" data-action="show-stat" data-stat-id="${item.id}">
-        <img class="stat-icon" src="${item.icon}" alt="" />
-        <span class="stat-number">${item.value}</span>
-        <span class="stat-label">${item.label}</span>
-        <span class="stat-disclosure">&rsaquo;</span>
-      </button>
-    ` : `
-      <div class="stat-item">
-        <img class="stat-icon" src="${item.icon}" alt="" />
-        <span class="stat-number">${item.value}</span>
-        <span class="stat-label">${item.label}</span>
-      </div>
-    `).join('');
-
-    const tripsHtml = trips.map((item) => `
-      <button type="button" class="trip-card" data-action="open-trip" data-trip-id="${item.id}">
-        <div class="trip-visual"><img class="trip-photo" src="${item.photo}" alt="${esc(item.title)}" /></div>
-        <div class="trip-details">
-          <div class="trip-badge">${item.title}</div>
-          <div class="trip-route">${item.route}</div>
-          <div class="trip-meta"><img class="trip-date-icon" src="assets/icons/calendar.svg" alt="" /><span class="numeric-text">${item.year}.${item.startDate} — ${item.endDate}</span></div>
-          <div class="trip-action">查看行程 <span>&rsaquo;</span></div>
-        </div>
-      </button>
-    `).join('');
-
     return `
-      <div class="page-heading footprint-heading">
-        <div class="page-title">旅行足迹</div>
-        <div class="footprint-title-ornament">
-          <img class="footprint-title-stroke" src="assets/decorations/watercolor-title-stroke-v1.png" alt="" />
-          <img class="footprint-title-clover" src="assets/illustrations/clover-watercolor-v1.png" alt="" />
-          <img class="footprint-title-stroke footprint-title-stroke-mirrored" src="assets/decorations/watercolor-title-stroke-v1.png" alt="" />
+      <div class="scr-nav">
+        <div class="scr-wordmark">wanderlazy</div>
+        <div class="scr-links">
+          ${tabs.map((tab) => `<button type="button" class="${state.activeTab === tab.id ? 'active' : ''}" data-action="switch-tab" data-tab="${tab.id}">${tab.label}</button>`).join('')}
         </div>
       </div>
-
-      <div class="map-stage">
-        <img class="map-watercolor" src="assets/decorations/world-map-watercolor-transparent-v1.png" alt="" />
-        <div class="map-location map-location-australia"><img class="map-pin" src="assets/icons/location-pin.svg" alt="" /><span>澳大利亚</span></div>
-        <div class="map-location map-location-china"><img class="map-pin" src="assets/icons/location-pin.svg" alt="" /><span>中国</span></div>
-      </div>
-
-      <div class="stats-card">${statsHtml}</div>
-
-      <div class="section-heading">
-        <div class="section-title-group">
-          <img class="section-sprig" src="assets/icons/journey-sprig.svg" alt="" />
-          <div class="section-title-copy">
-            <span>我的旅程</span>
-            <img class="section-title-underline" src="assets/decorations/watercolor-section-underline-v1.png" alt="" />
-          </div>
-        </div>
-        <span class="section-note">持续更新</span>
-      </div>
-      <div class="trip-grid">${tripsHtml}</div>
     `;
   }
 
-  function renderDateRail() {
+  function renderFootprints() {
+    const heroPhoto = trips[0].photo;
+    const statsHtml = footprintStats.map((item) => item.interactive ? `
+      <button type="button" class="stamp stamp-interactive" style="--r:${item.id === 'countries' ? '-3deg' : '2deg'}" data-action="show-stat" data-stat-id="${item.id}">
+        <b>${item.value}</b><span>${item.label}</span>
+      </button>
+    ` : `
+      <div class="stamp" style="--r:${item.label === '次旅行' ? '-1.5deg' : '2.5deg'}"><b>${item.value}</b><span>${item.label}</span></div>
+    `).join('');
+
+    const tripsHtml = trips.map((item, index) => `
+      <button type="button" class="index-card" style="--r:${index % 2 === 0 ? '-1.5deg' : '1.5deg'}" data-action="open-trip" data-trip-id="${item.id}">
+        <div class="tape" style="background:${index % 2 === 0 ? 'var(--mustard)' : 'var(--teal)'}"></div>
+        <div class="card-note">${index === 0 ? '即将出发' : '已收进相册'} ✦</div>
+        <div class="card-title">${item.title}</div>
+        <div class="card-route">${item.route}</div>
+        <div class="card-date">${item.year}.${item.startDate} — ${item.endDate} · ${item.duration}</div>
+      </button>
+    `).join('');
+
+    return `
+      <div class="scr-page">
+        <div class="scr-hero">
+          <div class="pin"></div>
+          <div class="polaroid"><img class="polaroid-photo" src="${heroPhoto}" alt="" /><div class="polaroid-cap">旅行手账 · ${new Date().getFullYear()}</div></div>
+          <div class="scr-headline">我们走过<br />的每一段路</div>
+        </div>
+        <div class="scr-stats">${statsHtml}</div>
+        <div class="scr-section-title">✦ 我的旅程</div>
+        <div class="scr-cards">${tripsHtml}</div>
+      </div>
+    `;
+  }
+
+  function renderDayRail() {
     const trip = currentTrip();
     const days = trip.days;
-    const atStart = state.dayIndex === 0;
-    const atEnd = state.dayIndex === days.length - 1;
+    const rotations = ['-2deg', '1.5deg', '-1deg', '2deg', '-1.5deg'];
     return `
-      <div class="date-navigator">
-        <button type="button" class="date-nav-arrow ${atStart ? 'date-nav-arrow-disabled' : ''}" data-action="date-prev" ${atStart ? 'disabled' : ''} aria-label="前一天"><span aria-hidden="true">&lsaquo;</span></button>
-        <div class="date-rail" id="date-rail">
-          <div class="date-rail-inner">
-            ${days.map((day) => `
-              <button type="button" class="date-chip ${day.index === state.dayIndex ? 'date-chip-active' : ''}" data-action="select-day" data-index="${day.index}" aria-current="${day.index === state.dayIndex ? 'true' : 'false'}">
-                <span class="date-chip-day">DAY <span class="numeric-text">${day.dayLabel}</span></span>
-                <span class="date-chip-date">${day.date}</span>
-                <span class="date-chip-city">${day.dateCity}</span>
-              </button>
-            `).join('')}
-          </div>
+      <div class="scr-dayrail-wrap">
+        <button type="button" class="scr-rail-arrow" data-action="date-prev" aria-label="前一天">&lsaquo;</button>
+        <div class="scr-dayrail" id="scr-dayrail">
+          ${days.map((day) => `
+            <button type="button" class="scr-daystub ${day.index === state.dayIndex ? 'active' : ''}" style="--r:${rotations[day.index % rotations.length]}" data-action="select-day" data-index="${day.index}">
+              <b>${day.dayLabel}</b><span>${day.date} ${day.dateCity}</span>
+            </button>
+          `).join('')}
         </div>
-        <button type="button" class="date-nav-arrow ${atEnd ? 'date-nav-arrow-disabled' : ''}" data-action="date-next" ${atEnd ? 'disabled' : ''} aria-label="后一天"><span aria-hidden="true">&rsaquo;</span></button>
+        <button type="button" class="scr-rail-arrow" data-action="date-next" aria-label="后一天">&rsaquo;</button>
       </div>
     `;
   }
@@ -121,53 +101,37 @@
   function renderItinerary() {
     const trip = currentTrip();
     const day = trip.days[state.dayIndex];
-    const tagsHtml = day.tags.map((tag) => `<span class="overview-tag">${esc(tag)}</span>`).join('');
-    const timelineHtml = day.timeline.map((item, index) => `
-      <div class="timeline-row">
-        <div class="timeline-time">${item.time}</div>
-        <div class="timeline-track"><div class="timeline-dot"></div>${index !== day.timeline.length - 1 ? '<div class="timeline-line"></div>' : ''}</div>
-        <div class="timeline-content">
-          <div class="timeline-title">${esc(item.title)}</div>
-          <div class="timeline-note">${esc(item.note)}</div>
-        </div>
+    const tagsHtml = day.tags.map((tag) => `<span>${esc(tag)}</span>`).join('');
+    const timelineHtml = day.timeline.map((item) => `
+      <div class="scr-timeline-row">
+        <div class="scr-timeline-dot">${item.time}</div>
+        <div><div class="scr-timeline-title">${esc(item.title)}</div><div class="scr-timeline-note">${esc(item.note)}</div></div>
       </div>
     `).join('');
 
-    const hotelHtml = day.hotel !== '—' ? `
-      <div class="hotel-card">
-        ${day.hotelImage
-          ? `<img class="hotel-photo" src="${day.hotelImage}" alt="${esc(day.hotel)}" />`
-          : `<div class="hotel-photo-placeholder"><img src="assets/icons/hotel-bed.svg" alt="" /></div>`}
-        <div class="hotel-copy">
-          <div class="hotel-title-row"><img class="hotel-title-icon" src="assets/icons/hotel-bed.svg" alt="" /><span class="hotel-title">住宿 · <span class="numeric-text">${esc(day.hotel)}</span></span></div>
-          <div class="hotel-address-row"><img class="hotel-address-icon" src="assets/icons/location-pin.svg" alt="" /><span class="hotel-note">${esc(day.hotelAddress)}</span></div>
-        </div>
-      </div>
-    ` : '';
+    const hasHotel = day.hotel !== '—';
+    const hotelHtml = hasHotel ? `<div class="scr-hotel"><b>住宿 · ${esc(day.hotel)}</b><span>${esc(day.hotelAddress)}</span></div>` : '';
 
     return `
-      <div class="page-heading itinerary-heading">
-        <button type="button" class="itinerary-title-choice" data-action="open-trip-picker">
-          <span class="page-title">${trip.title}</span>
-          <img class="itinerary-title-arrow" src="assets/icons/chevron-down.svg" alt="" />
-        </button>
-        <div class="itinerary-duration"><span class="numeric-text">${trip.duration}</span></div>
-      </div>
-      ${renderDateRail()}
-      <div class="day-summary-grid">
-        <div class="overview-card">
-          <div class="card-label"><span>&#10022;</span> 行程总览</div>
-          <div class="overview-main">${esc(day.title)}</div>
-          <div class="overview-copy">${esc(day.summary)}</div>
-          <div class="overview-tags">${tagsHtml}</div>
+      <div class="scr-page">
+        <div class="scr-itin-head">
+          <button type="button" class="scr-trip-picker" data-action="open-trip-picker">${trip.title} <span>▾</span></button>
+          <div class="scr-itin-duration">${trip.duration}</div>
         </div>
-        ${hotelHtml}
+        ${renderDayRail()}
+        <div class="scr-journal">
+          <div class="scr-journal-tape"></div>
+          <div class="scr-journal-date">DAY ${day.dayLabel} · ${day.date}</div>
+          <div class="scr-journal-title">${esc(day.title)}</div>
+          <div class="scr-journal-summary">${esc(day.summary)}</div>
+          <div class="scr-tags">${tagsHtml}</div>
+          <div class="scr-timeline">${timelineHtml}</div>
+        </div>
+        <div class="scr-split ${hasHotel ? '' : 'scr-split-single'}">
+          ${hotelHtml}
+          <div class="scr-sticky">☀ ${esc(day.reminder)}</div>
+        </div>
       </div>
-      <div class="timeline-card">
-        <div class="section-heading timeline-heading"><div class="timeline-heading-label"><img class="timeline-heading-icon" src="assets/icons/folded-map.svg" alt="" /><span>今日安排</span></div></div>
-        ${timelineHtml}
-      </div>
-      <div class="day-reminder">&#9728; ${esc(day.reminder)}</div>
     `;
   }
 
@@ -175,25 +139,22 @@
     const trip = currentTrip();
     const summary = buildExpenseSummary(expenseDefinitionsByTrip[trip.id], trip.travellerCount);
 
-    const budgetHtml = summary.expenses.map((category) => `
-      <div class="budget-group">
-        <button type="button" class="budget-row ${state.activeExpenseId === category.id ? 'budget-row-active' : ''}" data-action="toggle-expense" data-id="${category.id}" aria-expanded="${state.activeExpenseId === category.id ? 'true' : 'false'}">
-          <div class="budget-icon"><img class="budget-icon-image" src="${category.icon}" alt="" /></div>
-          <div class="budget-body">
-            <div class="budget-title"><span>${category.name}</span>${category.pending ? '<span>待补充</span>' : `<span class="numeric-text">¥ ${category.amountLabel}</span>`}</div>
-            <div class="budget-bar"><div class="budget-bar-fill" style="width: ${category.width}%; background: ${category.color};"></div></div>
+    const rowsHtml = summary.expenses.map((category) => `
+      <div class="scr-budget-group">
+        <button type="button" class="scr-budget-row" data-action="toggle-expense" data-id="${category.id}" aria-expanded="${state.activeExpenseId === category.id ? 'true' : 'false'}">
+          <img class="scr-budget-icon" src="${category.icon}" alt="" />
+          <div class="scr-budget-body">
+            <div class="scr-budget-top"><span>${category.name}</span><span>${category.pending ? '待补充' : `¥${category.amountLabel}`}</span></div>
+            <div class="scr-budget-tape" style="width:${category.width}%;background:${BUDGET_COLORS[category.id] || '#9a8a6a'}"></div>
           </div>
-          <span class="budget-chevron ${state.activeExpenseId === category.id ? 'budget-chevron-open' : ''}" aria-hidden="true">&rsaquo;</span>
+          <span class="scr-budget-chevron ${state.activeExpenseId === category.id ? 'open' : ''}">›</span>
         </button>
         ${state.activeExpenseId === category.id ? `
-          <div class="budget-detail">
+          <div class="scr-budget-detail">
             ${category.details.map((detail) => `
-              <div class="budget-detail-row">
-                <div class="budget-detail-copy">
-                  <span class="budget-detail-title">${esc(detail.title)}</span>
-                  ${detail.note ? `<span class="budget-detail-note">${esc(detail.note)}</span>` : ''}
-                </div>
-                ${detail.amountLabel ? `<span class="budget-detail-amount numeric-text">¥ ${detail.amountLabel}</span>` : ''}
+              <div class="scr-budget-detail-row">
+                <div><div class="scr-budget-detail-title">${esc(detail.title)}</div>${detail.note ? `<div class="scr-budget-detail-note">${esc(detail.note)}</div>` : ''}</div>
+                ${detail.amountLabel ? `<div class="scr-budget-detail-amount">¥${detail.amountLabel}</div>` : ''}
               </div>
             `).join('')}
           </div>
@@ -202,70 +163,46 @@
     `).join('');
 
     return `
-      <div class="page-heading expense-heading">
-        <div class="page-title">花销</div>
-        ${renderTripPicker()}
-      </div>
-      <div class="expense-hero">
-        <div class="expense-hero-copy">
-          <div class="expense-total-label">总花销</div>
-          <div class="expense-total">${summary.pending ? '待补充' : `<span class="numeric-text">¥ ${summary.total}</span>`}</div>
-          <div class="expense-total-note">${summary.pending ? '金额待填写' : `人均 <span class="numeric-text">¥ ${summary.perPerson}</span>`}</div>
+      <div class="scr-page">
+        <div class="scr-itin-head">
+          <button type="button" class="scr-trip-picker" data-action="open-trip-picker">${trip.title} <span>▾</span></button>
         </div>
-        <div class="expense-budget-decoration">
-          <img class="expense-budget-illustration" src="assets/illustrations/budget-wallet-pie-decoration-transparent-v1.jpg" alt="" />
-          <span class="expense-pie-label expense-pie-label-transport">交通</span>
-          <span class="expense-pie-label expense-pie-label-stay">住宿</span>
-          <span class="expense-pie-label expense-pie-label-activity">活动项目</span>
-          <span class="expense-pie-label expense-pie-label-food">美食</span>
-          <span class="expense-pie-label expense-pie-label-shopping">购物</span>
+        <div class="scr-receipt">
+          <div class="scr-receipt-label">${trip.title} · 总花销</div>
+          <div class="scr-receipt-total">${summary.pending ? '待补充' : `¥${summary.total}`}</div>
+          <div class="scr-receipt-sub">${summary.pending ? '金额待填写' : `人均 ¥${summary.perPerson} · ${trip.travellerCount}人同行`}</div>
         </div>
+        <div class="scr-budget-rows">${rowsHtml}</div>
       </div>
-      <div class="budget-card">${budgetHtml}</div>
-    `;
-  }
-
-  function renderTripPicker() {
-    return `
-      <button type="button" class="expense-trip-picker" data-action="open-trip-picker">
-        <span class="expense-trip-picker-label">${currentTrip().title}</span>
-        <img class="expense-trip-picker-arrow" src="assets/icons/chevron-down.svg" alt="" />
-      </button>
     `;
   }
 
   function renderGuide() {
     const trip = currentTrip();
     const guides = guidesByTrip[trip.id];
-    const cardsHtml = guides.map((item) => `
-      <button type="button" class="guide-card ${item.theme} ${state.activeGuideId === item.id ? 'guide-card-open' : ''}" data-action="toggle-guide" data-id="${item.id}" aria-expanded="${state.activeGuideId === item.id ? 'true' : 'false'}">
-        <div class="guide-card-main">
-          <div class="guide-copy">
-            <div class="guide-title-row">
-              <img class="guide-icon" src="${item.icon}" alt="" />
-              <div class="guide-title-stack">
-                <div class="guide-title">${item.title}</div>
-                <img class="guide-title-underline" src="assets/decorations/watercolor-section-underline-v1.png" alt="" />
-              </div>
-            </div>
-            <div class="guide-subtitle">${item.subtitle}</div>
-          </div>
-          <img class="guide-illustration" src="${item.image}" alt="" />
-        </div>
+    const rotations = ['-2deg', '1.5deg', '-1deg'];
+    const cardsHtml = guides.map((item, index) => `
+      <button type="button" class="scr-guide-card" style="--r:${rotations[index % rotations.length]}" data-action="toggle-guide" data-id="${item.id}" aria-expanded="${state.activeGuideId === item.id ? 'true' : 'false'}">
+        <div class="scr-guide-pin"></div>
+        <img class="scr-guide-icon" src="${item.icon}" alt="" />
+        <div class="scr-guide-title">${item.title}</div>
+        <div class="scr-guide-sub">${item.subtitle.replace(/\n/g, ' ')}</div>
         ${state.activeGuideId === item.id ? `
-          <div class="guide-details">
-            ${item.details.map((detail) => `<div class="guide-detail-row"><span class="guide-detail-mark">&#10022;</span><span class="guide-detail-text">${esc(detail)}</span></div>`).join('')}
+          <div class="scr-guide-details">
+            ${item.details.map((detail) => `<div class="scr-guide-detail-row"><span>✦</span><span>${esc(detail)}</span></div>`).join('')}
           </div>
         ` : ''}
       </button>
     `).join('');
 
     return `
-      <div class="page-heading guide-heading">
-        <div class="page-title">攻略</div>
-        ${renderTripPicker()}
+      <div class="scr-page">
+        <div class="scr-itin-head">
+          <button type="button" class="scr-trip-picker" data-action="open-trip-picker">${trip.title} <span>▾</span></button>
+        </div>
+        <div class="scr-section-title">✦ 攻略</div>
+        <div class="scr-guide-grid">${cardsHtml}</div>
       </div>
-      <div class="guide-grid">${cardsHtml}</div>
     `;
   }
 
@@ -276,19 +213,13 @@
     else if (state.activeTab === 'spending') bodyHtml = renderSpending();
     else bodyHtml = renderGuide();
 
-    root.innerHTML = `
-      <div class="content-scroll">
-        <div class="safe-top"></div>
-        ${bodyHtml}
-        <div class="bottom-space"></div>
-      </div>
-      ${renderTabbar()}
-    `;
+    root.innerHTML = renderNav() + bodyHtml;
 
     if (state.activeTab === 'itinerary') {
-      const rail = document.getElementById('date-rail');
-      const activeChip = rail && rail.querySelector('.date-chip-active');
-      if (activeChip) activeChip.scrollIntoView({ inline: 'center', block: 'nearest' });
+      const rail = document.getElementById('scr-dayrail');
+      const activeStub = rail && rail.querySelector('.scr-daystub.active');
+      if (activeStub) activeStub.scrollIntoView({ inline: 'center', block: 'nearest' });
+      if (rail && rail.children.length > 1) dayStep = rail.children[1].offsetLeft - rail.children[0].offsetLeft;
     }
   }
 
@@ -301,88 +232,59 @@
     state.activeGuideId = '';
   }
 
-  function showStatModal(statId) {
-    const item = footprintStats.find((stat) => stat.id === statId);
-    if (!item || !item.detail) return;
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
-    overlay.innerHTML = `
-      <div class="modal-card" role="dialog" aria-modal="true" aria-label="足迹">
-        <div class="modal-title">足迹</div>
-        <div class="modal-body">${esc(item.detail).replace(/\n/g, '<br />')}</div>
-        <button type="button" class="modal-confirm" data-action="close-modal">知道了</button>
-      </div>
-    `;
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay || e.target.dataset.action === 'close-modal') overlay.remove();
-    });
-    document.body.appendChild(overlay);
-  }
-
-  function moveDateRail(direction) {
+  function moveDay(direction) {
     const days = currentTrip().days;
     state.dayIndex = Math.max(0, Math.min(state.dayIndex + direction, days.length - 1));
     render();
+  }
+
+  function openModal(innerHtml, onClick) {
+    const overlay = document.createElement('div');
+    overlay.className = 'scr-modal-overlay';
+    overlay.innerHTML = `<div class="scr-modal-card"><div class="scr-modal-tape"></div>${innerHtml}</div>`;
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay || e.target.dataset.action === 'close-modal') { overlay.remove(); return; }
+      if (onClick) onClick(e, overlay);
+    });
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+
+  function showStatModal(statId) {
+    const item = footprintStats.find((stat) => stat.id === statId);
+    if (!item || !item.detail) return;
+    openModal(`
+      <div class="scr-modal-title">足迹 ✦</div>
+      <div class="scr-modal-body">${esc(item.detail).replace(/\n/g, '<br />')}</div>
+      <button type="button" class="scr-modal-confirm" data-action="close-modal">知道了</button>
+    `);
+  }
+
+  function openTripPicker() {
+    openModal(`
+      <div class="scr-modal-title">切换旅程 ✦</div>
+      ${trips.map((item) => `<button type="button" class="scr-modal-option" data-trip-id="${item.id}">${item.title}</button>`).join('')}
+      <button type="button" class="scr-modal-confirm" data-action="close-modal">取消</button>
+    `, (e, overlay) => {
+      const option = e.target.closest('.scr-modal-option');
+      if (option) { applyTrip(option.dataset.tripId); overlay.remove(); render(); }
+    });
   }
 
   root.addEventListener('click', (e) => {
     const target = e.target.closest('[data-action]');
     if (!target) return;
     const action = target.dataset.action;
-
-    if (action === 'switch-tab') {
-      state.activeTab = target.dataset.tab;
-      render();
-    } else if (action === 'open-trip') {
-      applyTrip(target.dataset.tripId);
-      state.activeTab = 'itinerary';
-      render();
-    } else if (action === 'select-day') {
-      state.dayIndex = Number(target.dataset.index);
-      render();
-    } else if (action === 'date-prev') {
-      moveDateRail(-1);
-    } else if (action === 'date-next') {
-      moveDateRail(1);
-    } else if (action === 'toggle-expense') {
-      const id = target.dataset.id;
-      state.activeExpenseId = state.activeExpenseId === id ? '' : id;
-      render();
-    } else if (action === 'toggle-guide') {
-      const id = target.dataset.id;
-      state.activeGuideId = state.activeGuideId === id ? '' : id;
-      render();
-    } else if (action === 'show-stat') {
-      showStatModal(target.dataset.statId);
-    } else if (action === 'open-trip-picker') {
-      openTripPicker();
-    }
+    if (action === 'switch-tab') { state.activeTab = target.dataset.tab; render(); }
+    else if (action === 'open-trip') { applyTrip(target.dataset.tripId); state.activeTab = 'itinerary'; render(); }
+    else if (action === 'select-day') { state.dayIndex = Number(target.dataset.index); render(); }
+    else if (action === 'date-prev') moveDay(-1);
+    else if (action === 'date-next') moveDay(1);
+    else if (action === 'toggle-expense') { const id = target.dataset.id; state.activeExpenseId = state.activeExpenseId === id ? '' : id; render(); }
+    else if (action === 'toggle-guide') { const id = target.dataset.id; state.activeGuideId = state.activeGuideId === id ? '' : id; render(); }
+    else if (action === 'show-stat') showStatModal(target.dataset.statId);
+    else if (action === 'open-trip-picker') openTripPicker();
   });
-
-  function openTripPicker() {
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
-    overlay.innerHTML = `
-      <div class="modal-card" role="dialog" aria-modal="true" aria-label="切换旅程">
-        <div class="modal-title">切换旅程</div>
-        ${trips.map((item) => `<button type="button" class="modal-option" data-trip-id="${item.id}">${item.title}</button>`).join('')}
-        <button type="button" class="modal-confirm" data-action="close-modal">取消</button>
-      </div>
-    `;
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay || e.target.dataset.action === 'close-modal') {
-        overlay.remove();
-        return;
-      }
-      const option = e.target.closest('.modal-option');
-      if (option) {
-        applyTrip(option.dataset.tripId);
-        overlay.remove();
-        render();
-      }
-    });
-    document.body.appendChild(overlay);
-  }
 
   render();
 })();

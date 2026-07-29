@@ -1,322 +1,204 @@
 :root {
-  --paper: #f6f1e7;
-  --ink: #273d2c;
+  --bg: #e9dab9;
+  --ink: #2b1b0e;
+  --card: #fbf3e1;
+  --red: #b23a2e;
+  --teal: #3e7a6b;
+  --mustard: #d9a441;
+  --gold: #a9822f;
+  --muted: #6a5432;
 }
 
 * { box-sizing: border-box; }
-
 html, body { margin: 0; padding: 0; }
+img { max-width: 100%; display: block; }
 
 body {
   min-height: 100vh;
-  background: #ece5d4;
+  background: #d8c79c;
   color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: Georgia, "Songti SC", serif;
+  -webkit-font-smoothing: antialiased;
 }
-
-img { max-width: 100%; display: block; }
-
-.tab-item, .stat-item-interactive, .trip-card, .date-nav-arrow, .date-chip,
-.itinerary-title-choice, .expense-trip-picker, .budget-row, .guide-card,
-.modal-confirm, .modal-option {
-  all: unset;
-  box-sizing: border-box;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-.date-nav-arrow:disabled { cursor: default; }
-
-button:focus-visible {
-  outline: 2px solid #6a8a63;
-  outline-offset: 2px;
-  border-radius: 8px;
-}
-
-.page-title, .overview-main { text-wrap: balance; }
-
-.numeric-text,
-.stat-number,
-.trip-meta,
-.date-chip-date,
-.timeline-time,
-.expense-total {
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  font-variant-numeric: lining-nums tabular-nums;
-}
-.stat-number, .trip-meta, .date-chip-date, .timeline-time, .expense-total { line-height: 1; }
 
 .app-shell {
-  position: relative;
-  min-height: 100vh;
-  max-width: 480px;
+  max-width: 1200px;
   margin: 0 auto;
-  overflow: hidden;
-  background-color: var(--paper);
-  background-image: url('../assets/textures/warm-paper-v1.jpg');
-  background-position: center top;
-  background-size: cover;
+  min-height: 100vh;
+  background: var(--bg);
 }
 
-@media (min-width: 481px) {
-  body { padding: 32px 16px; }
-  .app-shell {
-    min-height: calc(100vh - 64px);
-    border-radius: 28px;
-    box-shadow: 0 24px 60px rgba(40, 30, 15, 0.22);
-  }
+@media (min-width: 861px) {
+  body { padding: 28px 16px; }
+  .app-shell { min-height: calc(100vh - 56px); box-shadow: 0 24px 60px rgba(30, 20, 8, .28); }
 }
 
-.page-botanical-top {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  width: 140px;
-  height: 162px;
-  pointer-events: none;
+button, .index-card, .stamp-interactive, .scr-daystub, .scr-budget-row, .scr-guide-card,
+.scr-trip-picker, .scr-rail-arrow, .scr-modal-option, .scr-modal-confirm, .scr-links button {
+  font-family: inherit;
 }
+button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 
-.content-scroll { padding: 0 16px; }
-.safe-top { height: 45px; }
-
-.page-heading { display: flex; align-items: flex-start; justify-content: space-between; margin: 4px 4px 15px; }
-.footprint-heading, .itinerary-heading, .expense-heading, .guide-heading {
-  flex-direction: column; align-items: center; justify-content: flex-start; margin: 8px 0 12px; text-align: center;
-}
-.itinerary-heading { margin: 8px 0 1px; }
-.itinerary-title-choice { display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.itinerary-title-arrow { width: 12.5px; height: 12.5px; margin-left: 6px; opacity: .66; }
-.itinerary-duration { display: flex; height: 23px; align-items: center; justify-content: center; margin-top: 4.5px; color: #8c8271; font-size: 12.5px; letter-spacing: .5px; }
-
-.page-title { color: #29432d; font-family: Georgia, "Songti SC", serif; font-size: 31px; font-weight: 700; line-height: 1.1; }
-
-.footprint-title-ornament { display: flex; height: 23px; align-items: center; justify-content: center; margin-top: 4.5px; }
-.footprint-title-stroke { width: 45px; height: 12px; opacity: .9; }
-.footprint-title-stroke-mirrored { margin-left: 5px; transform: scaleX(-1); }
-.footprint-title-clover { width: 21.5px; height: 21.5px; margin-left: 5px; }
-
-.map-stage { position: relative; height: 193px; margin: -10px -8px 0; overflow: visible; }
-.map-watercolor { position: absolute; top: 0; left: -8px; width: 375px; height: 187.5px; opacity: .58; }
-.map-location { position: absolute; z-index: 1; display: flex; width: 60px; flex-direction: column; align-items: center; color: #294b31; font-family: Georgia, "Songti SC", serif; font-size: 11px; font-weight: 700; line-height: 1.3; }
-.map-location-australia { top: 133px; left: 267.5px; }
-.map-location-china { top: 66px; left: 253px; }
-.map-pin { width: 21px; height: 24.5px; margin-bottom: 1px; }
-
-.stats-card { display: flex; margin-top: 1.5px; padding: 11px 0; border: .5px solid #e7decc; border-radius: 12px; background: rgba(255,255,255,.75); }
-.stat-item { position: relative; width: 25%; border-right: .5px dashed #d9cdb9; text-align: center; }
-.stat-item:last-child { border: 0; }
-.stat-icon { display: block; width: 22px; height: 22px; margin: 0 auto 4px; }
-.stat-number { display: block; color: #2c5138; font-family: Georgia, serif; font-size: 21.5px; font-weight: 700; }
-.stat-label { color: #7e786b; font-size: 10.5px; }
-.stat-item-interactive { cursor: pointer; }
-.stat-item-interactive:active { opacity: .7; }
-.stat-disclosure { position: absolute; top: 2.5px; right: 6px; color: #b7a98f; font-family: Georgia, serif; font-size: 12px; line-height: 1; }
-
-.section-heading { display: flex; align-items: center; justify-content: space-between; margin: 18px 4px 9px; color: #31513c; font-family: Georgia, "Songti SC", serif; font-size: 15px; font-weight: 700; }
-.section-title-group { display: flex; align-items: flex-start; }
-.section-sprig { width: 19px; height: 19px; margin: 1.5px 5px 0 0; }
-.section-title-copy { display: flex; flex-direction: column; align-items: flex-start; }
-.section-title-underline { display: block; width: 60px; height: 8px; margin-top: 1px; opacity: .86; }
-.section-note { color: #969080; font-size: 10.5px; font-weight: 400; }
-
-.trip-card { display: flex; width: 100%; padding: 8px; border: 1px solid #e8ddc9; border-radius: 14px; background: rgba(255,255,255,.8); box-shadow: 0 6px 12px rgba(80,65,42,.07); cursor: pointer; }
-.trip-card + .trip-card { margin-top: 8px; }
-.trip-visual { width: 110px; height: 110px; flex: 0 0 110px; overflow: hidden; border-radius: 10px; background: #d9d8cc; }
-.trip-photo { width: 100%; height: 100%; object-fit: cover; }
-.trip-details { position: relative; flex: 1; min-width: 0; padding: 5px 5px 2px 12px; }
-.trip-badge { display: inline-block; padding: 3.5px 6.5px; border-radius: 4px; background: #f5e6d2; color: #a75e3e; font-size: 11px; }
-.trip-route { margin-top: 7px; color: #29432d; font-family: Georgia, "Songti SC", serif; font-size: 14px; font-weight: 700; line-height: 1.6; }
-.trip-meta { display: flex; align-items: center; margin-top: 6px; color: #898273; font-size: 11px; line-height: 1; }
-.trip-date-icon { width: 13.5px; height: 13.5px; margin-right: 4.5px; opacity: .72; }
-.trip-action { margin-top: 24px; color: #557354; font-size: 11px; }
-
-.day-reminder { margin: 11px 2px 0; padding: 9px 10px; border-radius: 9px; background: rgba(246,232,206,.65); color: #807862; font-size: 11px; line-height: 1.7; }
-
-.date-navigator { display: flex; height: 62px; margin: 0 0 6px; align-items: center; }
-.date-nav-arrow { flex: 0 0 29px; display: flex; height: 50px; align-items: center; justify-content: center; color: #4d654e; font-family: Georgia, serif; font-size: 31px; line-height: 1; cursor: pointer; }
-.date-nav-arrow-disabled, .date-nav-arrow:disabled { color: #cfc9bb; }
-.date-rail { flex: 1; min-width: 0; height: 62px; overflow-x: auto; scrollbar-width: none; }
-.date-rail::-webkit-scrollbar { display: none; }
-.date-rail-inner { display: flex; height: 62px; align-items: center; gap: 0; }
-.date-chip { position: relative; flex: 0 0 68px; display: flex; height: 50px; flex-direction: column; align-items: center; justify-content: center; padding: 0 2px; border-radius: 8px; color: #73766c; text-align: center; cursor: pointer; }
-.date-chip + .date-chip::before { position: absolute; top: 8px; bottom: 8px; left: 0; width: .5px; background: #ddd7c9; content: ""; }
-.date-chip-active { background: #31513c; color: #fffdf6; box-shadow: 0 3px 6px rgba(49,81,60,.08); }
-.date-chip-active::before, .date-chip-active + .date-chip::before { display: none; }
-.date-chip-day { display: block; font-size: 12px; letter-spacing: .5px; line-height: 1.1; }
-.date-chip-date { display: block; margin-top: 2px; font-size: 11px; line-height: 1.1; }
-.date-chip-city { display: block; margin-top: 2px; overflow: hidden; font-size: 11px; line-height: 1.1; text-overflow: ellipsis; white-space: nowrap; }
-
-.overview-card, .hotel-card, .timeline-card, .budget-card {
-  border: 1px solid #e7decb; border-radius: 14px; background: rgba(255,255,255,.8); box-shadow: 0 5px 12px rgba(80,65,42,.055);
-}
-.overview-card { margin-top: 11px; padding: 12px 13px 12.5px; }
-.card-label { color: #37533d; font-family: Georgia, "Songti SC", serif; font-size: 13.5px; font-weight: 700; }
-.overview-main { margin-top: 8px; color: #304b34; font-family: Georgia, "Songti SC", serif; font-size: 17px; font-weight: 700; }
-.overview-copy { margin-top: 5px; color: #716d61; font-size: 11.5px; line-height: 1.65; }
-.overview-tags { margin-top: 8.5px; }
-.overview-tag { display: inline-block; margin: 0 5px 5px 0; padding: 3.5px 7px; border-radius: 99px; background: #eff0e5; color: #626f55; font-size: 10px; }
-
-.hotel-card { display: flex; min-height: 75px; align-items: stretch; margin-top: 9px; padding: 6px; }
-.hotel-photo, .hotel-photo-placeholder { width: 86px; height: 75px; flex: 0 0 86px; overflow: hidden; border-radius: 9px; background: #edf0e5; }
-.hotel-photo { object-fit: cover; }
-.hotel-photo-placeholder { display: flex; align-items: center; justify-content: center; }
-.hotel-photo-placeholder img { width: 28px; height: 28px; opacity: .62; }
-.hotel-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; justify-content: center; padding: 0 7px 0 10px; }
-.hotel-title-row, .hotel-address-row { display: flex; min-width: 0; align-items: center; }
-.hotel-title-icon { width: 16px; height: 16px; flex: 0 0 16px; margin-right: 4.5px; }
-.hotel-title { min-width: 0; color: #314c36; font-family: Georgia, "Songti SC", serif; font-size: 13px; font-weight: 700; line-height: 1.35; }
-.hotel-address-row { margin-top: 8px; align-items: flex-start; }
-.hotel-address-icon { width: 12px; height: 14px; flex: 0 0 12px; margin: .5px 5px 0 2px; opacity: .58; }
-.hotel-note { min-width: 0; color: #807a6d; font-size: 9.5px; line-height: 1.45; }
-
-.timeline-card { margin-top: 9px; padding: 1.5px 13px 12.5px; }
-.timeline-heading-label { display: flex; align-items: center; }
-.timeline-heading-icon { width: 17px; height: 17px; margin-right: 5px; }
-.timeline-row { display: flex; min-height: 57.5px; }
-.timeline-time { width: 43px; padding-top: 4.5px; color: #536a50; font-family: Georgia, serif; font-size: 11.5px; }
-.timeline-track { position: relative; width: 17px; }
-.timeline-dot { position: absolute; top: 7.5px; left: 3px; width: 8px; height: 8px; border: 2px solid #4d754e; border-radius: 50%; background: #f8f5ec; }
-.timeline-line { position: absolute; top: 17.5px; bottom: 0; left: 6.5px; border-left: 1px dashed #99ad91; }
-.timeline-content { flex: 1; padding: 2px 0 9px 4px; border-bottom: 1px solid #eee7db; }
-.timeline-title { color: #304b34; font-family: Georgia, "Songti SC", serif; font-size: 14px; font-weight: 700; }
-.timeline-note { margin-top: 3.5px; color: #7a7569; font-size: 10.5px; line-height: 1.45; }
-
-.expense-trip-picker { display: inline-flex; box-sizing: border-box; height: 29px; margin-top: 11.5px; align-items: center; justify-content: center; padding: 0 8px 0 10px; border: 1px solid #cfc4af; border-radius: 99px; color: #36543b; font-family: Georgia, "Songti SC", serif; font-size: 13px; cursor: pointer; }
-.expense-trip-picker-arrow { width: 11px; height: 11px; flex: 0 0 11px; margin-left: 7px; }
-
-.expense-hero { position: relative; display: flex; box-sizing: border-box; min-height: 150px; align-items: center; overflow: hidden; padding: 15px 14px; border: 1px solid #e4d8c2; border-radius: 15px; background: rgba(255,253,247,.88); box-shadow: 0 5px 12px rgba(80,65,42,.08); }
-.expense-hero-copy { position: relative; z-index: 2; width: 138px; min-width: 0; flex: 0 0 138px; }
-.expense-total-label { color: #38513b; font-family: Georgia, "Songti SC", serif; font-size: 15.5px; font-weight: 700; }
-.expense-total { margin-top: 7px; color: #29442f; font-family: Georgia, serif; font-size: 25px; line-height: 1; white-space: nowrap; }
-.expense-total-note { margin-top: 10px; color: #ad7a2b; font-family: Georgia, "Songti SC", serif; font-size: 13.5px; font-weight: 600; line-height: 1; white-space: nowrap; }
-.expense-budget-decoration { position: absolute; top: 50%; right: -3px; width: 190px; height: 117px; transform: translateY(-50%); }
-.expense-budget-illustration { width: 100%; height: 100%; object-fit: contain; }
-.expense-pie-label { position: absolute; z-index: 1; font-family: Georgia, "Songti SC", serif; font-size: 8.5px; font-weight: 700; line-height: 1.2; white-space: nowrap; transform: translate(-50%,-50%); text-align: center; }
-.expense-pie-label-transport { top: 35%; left: 77%; color: #fffaf0; }
-.expense-pie-label-stay { top: 70%; left: 70%; color: #fffdf5; }
-.expense-pie-label-activity { top: 68%; left: 50%; color: #6d572b; }
-.expense-pie-label-food { top: 36%; left: 47%; color: #67593d; }
-.expense-pie-label-shopping { top: 17%; left: 58%; color: #666645; }
-
-.budget-card { margin-top: 10px; padding: 4px 11px; }
-.budget-group + .budget-group { }
-.budget-row { display: flex; width: 100%; min-height: 47px; align-items: center; padding: 8px 0; border-bottom: 1px dashed #e4dbcb; cursor: pointer; }
-.budget-row-active { border-bottom-color: transparent; }
-.budget-icon { display: flex; width: 27px; height: 27px; flex: 0 0 27px; align-items: center; justify-content: center; border-radius: 50%; background: #f5ede1; }
-.budget-icon-image { width: 22px; height: 22px; }
-.budget-body { min-width: 0; flex: 1; margin-left: 8px; }
-.budget-title { display: flex; justify-content: space-between; color: #3d553e; font-family: Georgia, "Songti SC", serif; font-size: 12.5px; }
-.budget-bar { height: 5px; margin-top: 5.5px; overflow: hidden; border-radius: 99px; background: #eee8db; }
-.budget-bar-fill { height: 100%; border-radius: 99px; }
-.budget-chevron { width: 14px; margin-left: 7px; color: #89917b; font-family: Georgia, serif; font-size: 19.5px; line-height: 1; text-align: right; transition: transform .2s ease; }
-.budget-chevron-open { transform: rotate(90deg); }
-.budget-detail { margin: -1px 0 7px 35px; padding: 2px 0 2px 9px; border-left: 1px solid #e6dece; }
-.budget-detail-row { display: flex; min-height: 25px; align-items: center; justify-content: space-between; padding: 4.5px 2px 4.5px 0; }
-.budget-detail-copy { min-width: 0; flex: 1; }
-.budget-detail-title, .budget-detail-note { display: block; }
-.budget-detail-title { color: #4e604b; font-size: 10px; }
-.budget-detail-note { margin-top: 2px; color: #938b7d; font-size: 9px; line-height: 1.35; }
-.budget-detail-amount { flex: 0 0 auto; margin-left: 6px; color: #a46142; font-family: Georgia, serif; font-size: 10px; white-space: nowrap; }
-
-.guide-card { position: relative; display: block; width: 100%; min-height: 125px; margin: 9px 0; padding: 13px 18px; overflow: hidden; border: 1px solid #e6d8c1; border-radius: 14px; background: rgba(255,253,247,.85); cursor: pointer; }
-.guide-card-main { position: relative; z-index: 1; min-height: 125px; }
-.guide-copy { position: relative; z-index: 2; width: 161px; min-width: 0; }
-.guide-title-row { display: flex; min-width: 0; align-items: center; }
-.guide-icon { width: 33px; height: 33px; flex: 0 0 33px; }
-.guide-title-stack { display: flex; width: 80px; flex: 0 0 80px; flex-direction: column; margin-left: 8px; }
-.guide-title { margin: 0; color: #31513a; font-size: 20px; line-height: 1.25; white-space: nowrap; }
-.guide-title-underline { width: 80px; height: 8px; margin-top: 3.5px; opacity: .9; }
-.guide-subtitle { margin-top: 12px; color: #756e62; font-family: Georgia, "Songti SC", serif; font-size: 12.5px; line-height: 1.6; white-space: pre-line; }
-.guide-illustration { position: absolute; z-index: 1; top: -2px; right: -12px; width: 226px; height: 146px; object-fit: contain; }
-.guide-prep .guide-illustration { top: -9px; }
-.guide-transport .guide-illustration { top: -7px; }
-.guide-food .guide-illustration { top: -5px; right: -9px; width: 210px; height: 132.5px; }
-.guide-card-open { background: rgba(255,253,247,.96); }
-.guide-details { position: relative; z-index: 2; margin-top: 13px; padding: 10px 1px 1px; border-top: 1px dashed #e2d6bf; }
-.guide-detail-row { display: flex; align-items: flex-start; margin-top: 5.5px; }
-.guide-detail-row:first-child { margin-top: 0; }
-.guide-detail-mark { width: 13px; flex: 0 0 13px; color: #b87952; font-size: 8px; line-height: 1.55; }
-.guide-detail-text { color: #6d695f; font-size: 10px; line-height: 1.55; }
-
-.bottom-space { height: 88px; }
-.tabbar {
-  position: fixed; bottom: 8px; left: 50%; transform: translateX(-50%);
-  z-index: 10; display: flex; height: 58px; width: min(456px, calc(100% - 24px));
-  padding: 4px 6px; border: 1px solid #e5dccd; border-radius: 17px;
-  background: rgba(255,253,247,.97); box-shadow: 0 5px 13px rgba(76,57,37,.10);
-}
-.tab-item { position: relative; display: flex; width: 25%; flex-direction: column; align-items: center; justify-content: center; color: #8b887d; font-size: 10.5px; cursor: pointer; }
-.tab-icon { width: 20px; height: 20px; margin-bottom: 3px; opacity: .6; }
-.tab-active { color: #31553a; font-weight: 600; }
-.tab-active .tab-icon { opacity: 1; }
-.tab-active::after { position: absolute; bottom: -4px; width: 14px; height: 2.5px; border-radius: 99px; background: #31553a; content: ""; }
-
-.modal-overlay {
-  position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
-  background: rgba(39, 30, 18, .38); padding: 24px;
-}
-.modal-card {
-  width: 100%; max-width: 300px; padding: 24px 20px; border-radius: 18px;
-  background: #fffdf7; box-shadow: 0 20px 40px rgba(40,30,15,.25); text-align: center;
-}
-.modal-title { color: #29432d; font-family: Georgia, "Songti SC", serif; font-size: 17px; font-weight: 700; margin-bottom: 12px; }
-.modal-body { color: #5c5648; font-size: 14px; line-height: 1.7; white-space: pre-line; }
-.modal-option { display: block; width: 100%; padding: 12px 8px; border-top: 1px solid #eee4d2; color: #31513c; font-size: 14px; text-align: center; }
-.modal-option:first-of-type { border-top: none; margin-top: 8px; }
-.modal-confirm { display: block; width: 100%; margin-top: 16px; padding: 10px; border-radius: 12px; background: #31513c; color: #fffdf6; font-size: 14px; font-weight: 600; text-align: center; }
-
+/* ===== Nav ===== */
+.scr-nav { display: flex; align-items: baseline; justify-content: space-between; padding: 26px 44px; }
+.scr-wordmark { font-family: "Segoe Print", "Bradley Hand", "Noteworthy", cursive; font-size: 30px; }
+.scr-links { display: flex; gap: 22px; }
+.scr-links button { all: unset; cursor: pointer; font-size: 14px; color: var(--muted); }
+.scr-links button.active { color: var(--red); font-weight: 700; border-bottom: 2px solid var(--red); padding-bottom: 2px; }
 @media (hover: hover) and (pointer: fine) {
-  .trip-card, .guide-card { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
-  .trip-card:hover, .guide-card:hover { transform: translateY(-3px); box-shadow: 0 14px 26px rgba(80,65,42,.14); border-color: #d8c7a3; }
-  .stat-item-interactive { transition: background .15s ease; border-radius: 10px; }
-  .stat-item-interactive:hover { background: rgba(49,81,60,.06); }
-  .date-chip:not(.date-chip-active):hover { background: rgba(49,81,60,.08); }
-  .date-nav-arrow:not(:disabled):hover { color: #2c4a2f; }
-  .budget-row { transition: opacity .15s ease; }
-  .budget-row:hover { opacity: .82; }
-  .tab-item { transition: color .15s ease; }
-  .tab-item:not(.tab-active):hover { color: #4a6b4d; }
-  .itinerary-title-choice:hover, .expense-trip-picker:hover { opacity: .78; }
-  .modal-option:hover { background: #f6efdd; }
-  .modal-confirm:hover { opacity: .9; }
+  .scr-links button:hover { color: var(--ink); }
 }
 
-@media (min-width: 900px) {
-  .app-shell { max-width: 960px; }
-  .content-scroll { padding: 0 56px; }
-  .safe-top { height: 88px; }
-  .bottom-space { height: 24px; }
-  .page-botanical-top { width: 200px; height: 231px; }
+.scr-page { padding: 0 44px 70px; }
 
-  .page-title { font-size: clamp(31px, 1.6vw + 20px, 44px); }
-  .overview-main { font-size: clamp(17px, .9vw + 12px, 24px); }
-  .overview-copy { font-size: clamp(11.5px, .35vw + 10px, 14px); }
-  .trip-route { font-size: clamp(14px, .5vw + 11px, 18px); }
-  .expense-total { font-size: clamp(25px, 1.4vw + 16px, 38px); }
-  .guide-title { font-size: clamp(20px, .9vw + 14px, 26px); }
+/* ===== Footprints ===== */
+.scr-hero { position: relative; min-height: 300px; margin-bottom: 26px; }
+.polaroid { position: absolute; top: 0; left: 0; width: 260px; background: #fffdf8; padding: 12px 12px 44px; box-shadow: 0 14px 28px rgba(43,27,14,.25); transform: rotate(-4deg); }
+.polaroid-photo { width: 100%; height: 190px; object-fit: cover; }
+.polaroid-cap { font-family: "Segoe Print", "Bradley Hand", cursive; font-size: 15px; margin-top: 10px; color: #4a3a24; text-align: center; }
+.pin { position: absolute; top: -6px; left: 122px; width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #e6786a, #a8342a); box-shadow: 0 3px 5px rgba(0,0,0,.3); z-index: 2; }
+.scr-headline { position: absolute; right: 10px; top: 60px; width: 300px; font-family: "Segoe Print", "Bradley Hand", "Noteworthy", cursive; font-size: 34px; line-height: 1.35; color: #3a2a17; transform: rotate(2deg); }
 
-  .trip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .trip-card { flex-direction: column; align-items: stretch; padding: 12px; }
-  .trip-card + .trip-card { margin-top: 0; }
-  .trip-visual { width: 100%; height: 200px; flex: none; }
-  .trip-details { padding: 14px 4px 4px; }
-  .trip-action { margin-top: 16px; }
+.scr-stats { display: flex; gap: 18px; margin: 10px 0 34px; flex-wrap: wrap; }
+.stamp { all: unset; box-sizing: border-box; background: var(--card); padding: 14px 18px; text-align: center; border: 2px dashed #c9ab6f; transform: rotate(var(--r, -2deg)); box-shadow: 0 6px 14px rgba(43,27,14,.14); display: block; }
+.stamp b { display: block; font-size: 24px; }
+.stamp span { font-size: 11px; color: var(--muted); font-family: -apple-system, sans-serif; }
+.stamp-interactive { cursor: pointer; }
+@media (hover: hover) and (pointer: fine) {
+  .stamp-interactive:hover { box-shadow: 0 10px 20px rgba(43,27,14,.22); }
+}
 
-  .guide-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .guide-card { margin: 0; }
+.scr-section-title { font-size: 15px; margin: 0 0 16px; color: #4a3a24; }
+.scr-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.index-card { all: unset; box-sizing: border-box; position: relative; display: block; width: 100%; background: var(--card); padding: 20px 22px 22px; box-shadow: 0 10px 22px rgba(43,27,14,.16); transform: rotate(var(--r, -1.5deg)); cursor: pointer; text-align: left; }
+.tape { position: absolute; top: -10px; left: 26px; width: 78px; height: 26px; opacity: .85; transform: rotate(-6deg); }
+.card-note { font-family: "Segoe Print", "Bradley Hand", cursive; font-size: 13px; color: var(--red); margin-bottom: 8px; }
+.card-title { font-size: 21px; font-weight: 700; margin: 0 0 6px; }
+.card-route { font-size: 14px; margin-bottom: 10px; }
+.card-date { font-family: -apple-system, sans-serif; font-size: 12px; color: var(--muted); }
+@media (hover: hover) and (pointer: fine) {
+  .index-card { transition: transform .18s ease, box-shadow .18s ease; }
+  .index-card:hover { box-shadow: 0 16px 30px rgba(43,27,14,.22); }
+}
 
-  .day-summary-grid { display: grid; grid-template-columns: 1.3fr 1fr; align-items: stretch; gap: 16px; }
-  .day-summary-grid .overview-card, .day-summary-grid .hotel-card { margin-top: 0; }
-  .day-summary-grid .hotel-card { flex-direction: column; }
-  .day-summary-grid .hotel-photo, .day-summary-grid .hotel-photo-placeholder { width: 100%; height: 130px; flex: none; }
-  .day-summary-grid .hotel-copy { padding: 12px 4px 0; }
-  .day-summary-grid .hotel-address-row { margin-top: 10px; }
+/* ===== Shared: page head / trip picker ===== */
+.scr-itin-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+.scr-trip-picker { all: unset; box-sizing: border-box; cursor: pointer; font-size: 26px; font-weight: 700; color: var(--ink); }
+.scr-trip-picker span { font-size: 16px; color: var(--muted); }
+.scr-itin-duration { font-family: -apple-system, sans-serif; font-size: 13px; color: var(--muted); }
 
-  .date-chip { flex: 0 0 92px; }
+/* ===== Itinerary ===== */
+.scr-dayrail-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+.scr-rail-arrow { all: unset; box-sizing: border-box; flex: none; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--muted); cursor: pointer; }
+.scr-dayrail { display: flex; gap: 14px; overflow-x: auto; padding: 8px 4px 14px; scrollbar-width: thin; }
+.scr-daystub { all: unset; box-sizing: border-box; flex: 0 0 auto; background: var(--card); padding: 10px 16px; text-align: center; box-shadow: 0 6px 14px rgba(43,27,14,.14); transform: rotate(var(--r, -2deg)); cursor: pointer; font-family: -apple-system, sans-serif; min-width: 78px; }
+.scr-daystub b { display: block; font-family: Georgia, serif; font-size: 18px; }
+.scr-daystub span { font-size: 10px; color: var(--muted); white-space: nowrap; }
+.scr-daystub.active { background: var(--ink); color: var(--card); position: relative; }
+.scr-daystub.active::before { content: ""; position: absolute; top: -7px; left: 50%; margin-left: -6px; width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #e6786a, #a8342a); box-shadow: 0 2px 4px rgba(0,0,0,.3); }
+@media (hover: hover) and (pointer: fine) {
+  .scr-daystub:not(.active):hover { box-shadow: 0 10px 20px rgba(43,27,14,.2); }
+  .scr-rail-arrow:hover { color: var(--ink); }
+}
 
-  .tabbar {
-    position: fixed; top: 24px; bottom: auto; left: 50%; transform: translateX(-50%);
-    width: auto; min-width: 340px; height: 54px; padding: 4px 10px;
-  }
+.scr-journal { position: relative; background: var(--card); background-image: repeating-linear-gradient(var(--card) 0 27px, #ddd0ab 27px 28px); padding: 30px 34px 34px; box-shadow: 0 12px 26px rgba(43,27,14,.18); margin-bottom: 22px; }
+.scr-journal-tape { position: absolute; top: -12px; right: 60px; width: 90px; height: 28px; background: var(--teal); opacity: .85; transform: rotate(4deg); }
+.scr-journal-date { font-family: "Segoe Print", "Bradley Hand", cursive; font-size: 16px; color: var(--red); margin-bottom: 4px; }
+.scr-journal-title { font-size: 26px; font-weight: 700; margin: 0 0 12px; }
+.scr-journal-summary { font-size: 15px; line-height: 1.75; margin-bottom: 14px; }
+.scr-tags { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.scr-tags span { border: 1.5px dashed var(--gold); border-radius: 999px; padding: 4px 12px; font-family: -apple-system, sans-serif; font-size: 11px; color: var(--muted); }
+.scr-timeline { border-top: 1px dashed #c9ab6f; padding-top: 16px; }
+.scr-timeline-row { display: flex; gap: 16px; margin-bottom: 16px; }
+.scr-timeline-row:last-child { margin-bottom: 0; }
+.scr-timeline-dot { flex: none; width: 44px; height: 44px; border-radius: 50%; background: #fffdf8; border: 2px solid var(--red); display: flex; align-items: center; justify-content: center; font-family: -apple-system, sans-serif; font-size: 10px; color: var(--red); font-weight: 700; text-align: center; padding: 2px; }
+.scr-timeline-title { font-weight: 700; font-size: 16px; }
+.scr-timeline-note { font-family: -apple-system, sans-serif; font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.scr-split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.scr-split-single { grid-template-columns: 1fr; max-width: 480px; }
+.scr-hotel { background: var(--card); padding: 18px 20px; box-shadow: 0 8px 18px rgba(43,27,14,.14); transform: rotate(1deg); }
+.scr-hotel b { display: block; font-size: 16px; margin-bottom: 6px; }
+.scr-hotel span { font-family: -apple-system, sans-serif; font-size: 12px; color: var(--muted); }
+.scr-sticky { background: #f3d95c; padding: 18px 20px; box-shadow: 0 8px 18px rgba(43,27,14,.18); transform: rotate(-1.5deg); font-family: "Segoe Print", "Bradley Hand", cursive; font-size: 15px; color: #4a3a10; display: flex; align-items: center; }
+
+/* ===== Spending ===== */
+.scr-receipt { position: relative; max-width: 340px; margin: 0 auto 30px; background: var(--card); padding: 26px 26px 22px; box-shadow: 0 12px 26px rgba(43,27,14,.18); clip-path: polygon(0 0,100% 0,100% 96%,95% 100%,90% 96%,85% 100%,80% 96%,75% 100%,70% 96%,65% 100%,60% 96%,55% 100%,50% 96%,45% 100%,40% 96%,35% 100%,30% 96%,25% 100%,20% 96%,15% 100%,10% 96%,5% 100%,0 96%); }
+.scr-receipt-label { font-family: "Segoe Print", "Bradley Hand", cursive; font-size: 16px; color: var(--red); text-align: center; }
+.scr-receipt-total { font-size: 38px; font-weight: 700; text-align: center; margin: 6px 0; }
+.scr-receipt-sub { font-family: -apple-system, sans-serif; font-size: 12px; text-align: center; color: var(--muted); }
+
+.scr-budget-rows { display: flex; flex-direction: column; gap: 18px; max-width: 640px; margin: 0 auto; }
+.scr-budget-row { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 14px; width: 100%; cursor: pointer; }
+.scr-budget-icon { width: 34px; height: 34px; flex: none; }
+.scr-budget-body { flex: 1; min-width: 0; }
+.scr-budget-top { display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.scr-budget-tape { height: 20px; border-radius: 2px; opacity: .85; min-width: 6px; }
+.scr-budget-chevron { flex: none; font-size: 20px; color: var(--muted); transition: transform .2s ease; }
+.scr-budget-chevron.open { transform: rotate(90deg); }
+.scr-budget-detail { max-width: 640px; margin: 10px auto 0; padding-left: 16px; border-left: 2px dashed var(--gold); display: flex; flex-direction: column; gap: 10px; }
+.scr-budget-detail-row { display: flex; justify-content: space-between; gap: 12px; font-family: -apple-system, sans-serif; font-size: 12px; }
+.scr-budget-detail-title { font-weight: 700; }
+.scr-budget-detail-note { color: var(--muted); font-size: 11px; margin-top: 2px; }
+.scr-budget-detail-amount { color: var(--red); flex: none; white-space: nowrap; }
+@media (hover: hover) and (pointer: fine) {
+  .scr-budget-row:hover .scr-budget-top { color: var(--red); }
+}
+
+/* ===== Guide ===== */
+.scr-guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.scr-guide-card { all: unset; box-sizing: border-box; position: relative; display: block; width: 100%; background: var(--card); padding: 22px 18px 20px; box-shadow: 0 10px 22px rgba(43,27,14,.16); transform: rotate(var(--r, -1.5deg)); text-align: center; cursor: pointer; }
+.scr-guide-pin { position: absolute; top: -8px; left: 50%; margin-left: -8px; width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #e6786a, #a8342a); box-shadow: 0 3px 5px rgba(0,0,0,.3); }
+.scr-guide-icon { width: 40px; height: 40px; margin: 0 auto 8px; }
+.scr-guide-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.scr-guide-sub { font-family: -apple-system, sans-serif; font-size: 12px; color: var(--muted); line-height: 1.6; }
+.scr-guide-details { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--gold); text-align: left; }
+.scr-guide-detail-row { display: flex; gap: 8px; margin-top: 8px; font-family: -apple-system, sans-serif; font-size: 12px; color: var(--muted); line-height: 1.5; }
+.scr-guide-detail-row span:first-child { color: var(--red); flex: none; }
+@media (hover: hover) and (pointer: fine) {
+  .scr-guide-card { transition: transform .18s ease, box-shadow .18s ease; }
+  .scr-guide-card:hover { box-shadow: 0 16px 30px rgba(43,27,14,.22); }
+}
+
+/* ===== Modals ===== */
+.scr-modal-overlay { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: rgba(43,27,14,.45); padding: 24px; }
+.scr-modal-card { position: relative; width: 100%; max-width: 320px; background: var(--card); padding: 30px 24px 24px; box-shadow: 0 20px 40px rgba(43,27,14,.3); transform: rotate(-1deg); text-align: center; }
+.scr-modal-tape { position: absolute; top: -12px; left: 50%; margin-left: -45px; width: 90px; height: 26px; background: var(--mustard); opacity: .85; transform: rotate(-3deg); }
+.scr-modal-title { font-family: "Segoe Print", "Bradley Hand", cursive; font-size: 20px; color: var(--red); margin-bottom: 14px; }
+.scr-modal-body { font-size: 15px; line-height: 1.7; white-space: pre-line; margin-bottom: 10px; }
+.scr-modal-option { all: unset; box-sizing: border-box; display: block; width: 100%; padding: 12px 8px; border-top: 1px solid #e2d3ab; font-size: 15px; cursor: pointer; }
+.scr-modal-option:first-of-type { border-top: none; margin-top: 4px; }
+.scr-modal-confirm { all: unset; box-sizing: border-box; display: block; width: 100%; margin-top: 16px; padding: 10px; background: var(--ink); color: var(--card); font-size: 14px; font-weight: 700; text-align: center; cursor: pointer; }
+@media (hover: hover) and (pointer: fine) {
+  .scr-modal-option:hover { background: rgba(169,130,47,.12); }
+  .scr-modal-confirm:hover { opacity: .85; }
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 860px) {
+  .scr-nav { padding: 18px 18px; }
+  .scr-wordmark { font-size: 24px; }
+  .scr-links { gap: 12px; }
+  .scr-links button { font-size: 12px; }
+  .scr-page { padding: 0 18px 50px; }
+
+  .scr-hero { min-height: 0; }
+  .polaroid { position: static; width: 220px; margin: 0 auto 18px; transform: rotate(-3deg); }
+  .pin { left: 50%; margin-left: -92px; top: -8px; }
+  .scr-headline { position: static; width: auto; font-size: 26px; text-align: center; transform: none; margin-bottom: 6px; }
+  .scr-stats { justify-content: center; gap: 10px; }
+  .stamp { padding: 10px 14px; }
+  .scr-cards { grid-template-columns: 1fr; gap: 26px; }
+
+  .scr-itin-head { justify-content: center; text-align: center; }
+  .scr-trip-picker { font-size: 21px; }
+  .scr-journal { padding: 22px 20px 24px; }
+  .scr-journal-title { font-size: 21px; }
+  .scr-split { grid-template-columns: 1fr; }
+
+  .scr-budget-rows { gap: 20px; }
+  .scr-budget-detail { padding-left: 12px; }
+
+  .scr-guide-grid { grid-template-columns: 1fr; gap: 24px; }
 }
