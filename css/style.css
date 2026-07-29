@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Zhi Mang Xing Sub';
+  src: url('../assets/fonts/zhi-mang-xing-subset.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg: #e9dab9;
   --ink: #2b1b0e;
@@ -7,6 +15,13 @@
   --mustard: #d9a441;
   --gold: #a9822f;
   --muted: #6a5432;
+  --font-hand: 'Zhi Mang Xing Sub', Georgia, "Songti SC", serif;
+  --font-num: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+
+.num {
+  font-family: var(--font-num);
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 * { box-sizing: border-box; }
@@ -42,7 +57,7 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 
 /* ===== Nav ===== */
 .scr-nav { display: flex; align-items: baseline; justify-content: space-between; padding: 26px 44px; }
-.scr-wordmark { font-family: "Segoe Print", "Bradley Hand", "Noteworthy", cursive; font-size: 30px; }
+.scr-wordmark { font-family: var(--font-hand); font-size: 30px; }
 .scr-links { display: flex; gap: 22px; }
 .scr-links button { all: unset; cursor: pointer; font-size: 14px; color: var(--muted); }
 .scr-links button.active { color: var(--red); font-weight: 700; border-bottom: 2px solid var(--red); padding-bottom: 2px; }
@@ -56,11 +71,11 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .scr-hero { position: relative; min-height: 300px; margin-bottom: 26px; }
 .polaroid { position: absolute; top: 0; left: 0; width: 260px; background: #fffdf8; padding: 12px 12px 44px; box-shadow: 0 14px 28px rgba(43,27,14,.25); transform: rotate(-4deg); }
 .polaroid-photo { width: 100%; height: 190px; object-fit: cover; }
-.polaroid-cap { font-family: "Segoe Print", "Bradley Hand", cursive; font-size: 15px; margin-top: 10px; color: #4a3a24; text-align: center; }
+.polaroid-cap { font-family: var(--font-hand); font-size: 17px; margin-top: 10px; color: #4a3a24; text-align: center; }
 .pin { position: absolute; top: -6px; left: 122px; width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #e6786a, #a8342a); box-shadow: 0 3px 5px rgba(0,0,0,.3); z-index: 2; }
-.scr-headline { position: absolute; right: 10px; top: 60px; width: 300px; font-family: "Segoe Print", "Bradley Hand", "Noteworthy", cursive; font-size: 34px; line-height: 1.35; color: #3a2a17; transform: rotate(2deg); }
+.scr-headline { position: absolute; right: 10px; top: 60px; width: 300px; font-family: var(--font-hand); font-size: 38px; line-height: 1.4; color: #3a2a17; transform: rotate(2deg); }
 
-.scr-stats { display: flex; gap: 18px; margin: 10px 0 34px; flex-wrap: wrap; }
+.scr-stats { display: flex; justify-content: center; gap: 18px; margin: 10px 0 34px; flex-wrap: wrap; }
 .stamp { all: unset; box-sizing: border-box; background: var(--card); padding: 14px 18px; text-align: center; border: 2px dashed #c9ab6f; transform: rotate(var(--r, -2deg)); box-shadow: 0 6px 14px rgba(43,27,14,.14); display: block; }
 .stamp b { display: block; font-size: 24px; }
 .stamp span { font-size: 11px; color: var(--muted); font-family: -apple-system, sans-serif; }
@@ -70,10 +85,12 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 }
 
 .scr-section-title { font-size: 15px; margin: 0 0 16px; color: #4a3a24; }
+.scr-year-heading { font-family: Georgia, serif; font-size: 26px; font-weight: 700; color: var(--ink); margin: 30px 0 16px; }
+.scr-year-heading:first-of-type { margin-top: 6px; }
 .scr-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 .index-card { all: unset; box-sizing: border-box; position: relative; display: block; width: 100%; background: var(--card); padding: 20px 22px 22px; box-shadow: 0 10px 22px rgba(43,27,14,.16); transform: rotate(var(--r, -1.5deg)); cursor: pointer; text-align: left; }
 .tape { position: absolute; top: -10px; left: 26px; width: 78px; height: 26px; opacity: .85; transform: rotate(-6deg); }
-.card-note { font-family: "Segoe Print", "Bradley Hand", cursive; font-size: 13px; color: var(--red); margin-bottom: 8px; }
+.card-note { font-family: var(--font-hand); font-size: 15px; color: var(--red); margin-bottom: 8px; }
 .card-title { font-size: 21px; font-weight: 700; margin: 0 0 6px; }
 .card-route { font-size: 14px; margin-bottom: 10px; }
 .card-date { font-family: -apple-system, sans-serif; font-size: 12px; color: var(--muted); }
@@ -83,13 +100,13 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 }
 
 /* ===== Shared: page head / trip picker ===== */
-.scr-itin-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+.scr-itin-head { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 24px; gap: 6px; }
 .scr-trip-picker { all: unset; box-sizing: border-box; cursor: pointer; font-size: 26px; font-weight: 700; color: var(--ink); }
 .scr-trip-picker span { font-size: 16px; color: var(--muted); }
-.scr-itin-duration { font-family: -apple-system, sans-serif; font-size: 13px; color: var(--muted); }
+.scr-itin-duration { font-size: 13px; color: var(--muted); }
 
 /* ===== Itinerary ===== */
-.scr-dayrail-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+.scr-dayrail-wrap { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 22px; }
 .scr-rail-arrow { all: unset; box-sizing: border-box; flex: none; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--muted); cursor: pointer; }
 .scr-dayrail { display: flex; gap: 14px; overflow-x: auto; padding: 8px 4px 14px; scrollbar-width: thin; }
 .scr-daystub { all: unset; box-sizing: border-box; flex: 0 0 auto; background: var(--card); padding: 10px 16px; text-align: center; box-shadow: 0 6px 14px rgba(43,27,14,.14); transform: rotate(var(--r, -2deg)); cursor: pointer; font-family: -apple-system, sans-serif; min-width: 78px; }
@@ -104,7 +121,7 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 
 .scr-journal { position: relative; background: var(--card); background-image: repeating-linear-gradient(var(--card) 0 27px, #ddd0ab 27px 28px); padding: 30px 34px 34px; box-shadow: 0 12px 26px rgba(43,27,14,.18); margin-bottom: 22px; }
 .scr-journal-tape { position: absolute; top: -12px; right: 60px; width: 90px; height: 28px; background: var(--teal); opacity: .85; transform: rotate(4deg); }
-.scr-journal-date { font-family: "Segoe Print", "Bradley Hand", cursive; font-size: 16px; color: var(--red); margin-bottom: 4px; }
+.scr-journal-date { font-size: 15px; color: var(--red); margin-bottom: 4px; letter-spacing: .02em; }
 .scr-journal-title { font-size: 26px; font-weight: 700; margin: 0 0 12px; }
 .scr-journal-summary { font-size: 15px; line-height: 1.75; margin-bottom: 14px; }
 .scr-tags { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -121,13 +138,19 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .scr-hotel { background: var(--card); padding: 18px 20px; box-shadow: 0 8px 18px rgba(43,27,14,.14); transform: rotate(1deg); }
 .scr-hotel b { display: block; font-size: 16px; margin-bottom: 6px; }
 .scr-hotel span { font-family: -apple-system, sans-serif; font-size: 12px; color: var(--muted); }
-.scr-sticky { background: #f3d95c; padding: 18px 20px; box-shadow: 0 8px 18px rgba(43,27,14,.18); transform: rotate(-1.5deg); font-family: "Segoe Print", "Bradley Hand", cursive; font-size: 15px; color: #4a3a10; display: flex; align-items: center; }
+.scr-sticky { background: #f3d95c; padding: 18px 20px; box-shadow: 0 8px 18px rgba(43,27,14,.18); transform: rotate(-1.5deg); font-size: 15px; line-height: 1.6; color: #4a3a10; display: flex; align-items: center; }
 
 /* ===== Spending ===== */
-.scr-receipt { position: relative; max-width: 340px; margin: 0 auto 30px; background: var(--card); padding: 26px 26px 22px; box-shadow: 0 12px 26px rgba(43,27,14,.18); clip-path: polygon(0 0,100% 0,100% 96%,95% 100%,90% 96%,85% 100%,80% 96%,75% 100%,70% 96%,65% 100%,60% 96%,55% 100%,50% 96%,45% 100%,40% 96%,35% 100%,30% 96%,25% 100%,20% 96%,15% 100%,10% 96%,5% 100%,0 96%); }
-.scr-receipt-label { font-family: "Segoe Print", "Bradley Hand", cursive; font-size: 16px; color: var(--red); text-align: center; }
-.scr-receipt-total { font-size: 38px; font-weight: 700; text-align: center; margin: 6px 0; }
-.scr-receipt-sub { font-family: -apple-system, sans-serif; font-size: 12px; text-align: center; color: var(--muted); }
+.scr-receipt { position: relative; max-width: 640px; margin: 0 auto 26px; background: var(--card); padding: 26px 32px 24px; box-shadow: 0 12px 26px rgba(43,27,14,.18); clip-path: polygon(0 0,100% 0,100% 96%,95% 100%,90% 96%,85% 100%,80% 96%,75% 100%,70% 96%,65% 100%,60% 96%,55% 100%,50% 96%,45% 100%,40% 96%,35% 100%,30% 96%,25% 100%,20% 96%,15% 100%,10% 96%,5% 100%,0 96%); }
+.scr-receipt-label { font-size: 16px; color: var(--red); text-align: center; }
+.scr-receipt-total { font-size: 42px; font-weight: 700; text-align: center; margin: 6px 0; }
+.scr-receipt-sub { font-size: 13px; text-align: center; color: var(--muted); }
+
+.scr-donut-card { display: flex; align-items: center; justify-content: center; gap: 32px; max-width: 640px; margin: 0 auto 30px; padding: 22px 28px; background: var(--card); border: 2px dashed #c9ab6f; box-shadow: 0 8px 18px rgba(43,27,14,.12); flex-wrap: wrap; }
+.scr-donut-svg { width: 150px; height: 150px; flex: none; }
+.scr-donut-legend { display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+.scr-donut-legend-row { display: flex; align-items: center; gap: 8px; }
+.scr-donut-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
 
 .scr-budget-rows { display: flex; flex-direction: column; gap: 18px; max-width: 640px; margin: 0 auto; }
 .scr-budget-row { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 14px; width: 100%; cursor: pointer; }
@@ -147,7 +170,7 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 }
 
 /* ===== Guide ===== */
-.scr-guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.scr-guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 20px; }
 .scr-guide-card { all: unset; box-sizing: border-box; position: relative; display: block; width: 100%; background: var(--card); padding: 22px 18px 20px; box-shadow: 0 10px 22px rgba(43,27,14,.16); transform: rotate(var(--r, -1.5deg)); text-align: center; cursor: pointer; }
 .scr-guide-pin { position: absolute; top: -8px; left: 50%; margin-left: -8px; width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #e6786a, #a8342a); box-shadow: 0 3px 5px rgba(0,0,0,.3); }
 .scr-guide-icon { width: 40px; height: 40px; margin: 0 auto 8px; }
@@ -165,7 +188,7 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .scr-modal-overlay { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: rgba(43,27,14,.45); padding: 24px; }
 .scr-modal-card { position: relative; width: 100%; max-width: 320px; background: var(--card); padding: 30px 24px 24px; box-shadow: 0 20px 40px rgba(43,27,14,.3); transform: rotate(-1deg); text-align: center; }
 .scr-modal-tape { position: absolute; top: -12px; left: 50%; margin-left: -45px; width: 90px; height: 26px; background: var(--mustard); opacity: .85; transform: rotate(-3deg); }
-.scr-modal-title { font-family: "Segoe Print", "Bradley Hand", cursive; font-size: 20px; color: var(--red); margin-bottom: 14px; }
+.scr-modal-title { font-family: var(--font-hand); font-size: 22px; color: var(--red); margin-bottom: 14px; }
 .scr-modal-body { font-size: 15px; line-height: 1.7; white-space: pre-line; margin-bottom: 10px; }
 .scr-modal-option { all: unset; box-sizing: border-box; display: block; width: 100%; padding: 12px 8px; border-top: 1px solid #e2d3ab; font-size: 15px; cursor: pointer; }
 .scr-modal-option:first-of-type { border-top: none; margin-top: 4px; }
@@ -191,8 +214,9 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
   .stamp { padding: 10px 14px; }
   .scr-cards { grid-template-columns: 1fr; gap: 26px; }
 
-  .scr-itin-head { justify-content: center; text-align: center; }
   .scr-trip-picker { font-size: 21px; }
+  .scr-donut-card { padding: 18px 20px; gap: 20px; }
+  .scr-donut-svg { width: 120px; height: 120px; }
   .scr-journal { padding: 22px 20px 24px; }
   .scr-journal-title { font-size: 21px; }
   .scr-split { grid-template-columns: 1fr; }

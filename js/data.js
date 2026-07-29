@@ -188,6 +188,6 @@ const guidesByTrip = {
 const footprintStats = [
   { id: 'countries', icon: 'assets/icons/globe.svg', value: '2', label: '国家/地区', interactive: true, detail: '澳大利亚\n中国' },
   { id: 'cities', icon: 'assets/icons/building.svg', value: '6', label: '座城市', interactive: true, detail: '墨尔本、凯恩斯、悉尼\n西安、张掖、兰州' },
-  { icon: 'assets/icons/suitcase.svg', value: '2', label: '次旅行' },
-  { icon: 'assets/icons/calendar-accent.svg', value: '21', label: '天数' }
+  { id: 'trips', icon: 'assets/icons/suitcase.svg', value: '2', label: '次旅行', interactive: true },
+  { id: 'days', icon: 'assets/icons/calendar-accent.svg', value: '21', label: '天数', interactive: true }
 ];

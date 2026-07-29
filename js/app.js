@@ -47,22 +47,34 @@
 
   function renderFootprints() {
     const heroPhoto = trips[0].photo;
+    const rotations = { countries: '-3deg', cities: '2deg', trips: '-1.5deg', days: '2.5deg' };
     const statsHtml = footprintStats.map((item) => item.interactive ? `
-      <button type="button" class="stamp stamp-interactive" style="--r:${item.id === 'countries' ? '-3deg' : '2deg'}" data-action="show-stat" data-stat-id="${item.id}">
-        <b>${item.value}</b><span>${item.label}</span>
+      <button type="button" class="stamp stamp-interactive" style="--r:${rotations[item.id] || '-2deg'}" data-action="show-stat" data-stat-id="${item.id}">
+        <b class="num">${item.value}</b><span>${item.label}</span>
       </button>
     ` : `
-      <div class="stamp" style="--r:${item.label === '次旅行' ? '-1.5deg' : '2.5deg'}"><b>${item.value}</b><span>${item.label}</span></div>
+      <div class="stamp" style="--r:${rotations[item.id] || '-2deg'}"><b class="num">${item.value}</b><span>${item.label}</span></div>
     `).join('');
 
-    const tripsHtml = trips.map((item, index) => `
-      <button type="button" class="index-card" style="--r:${index % 2 === 0 ? '-1.5deg' : '1.5deg'}" data-action="open-trip" data-trip-id="${item.id}">
-        <div class="tape" style="background:${index % 2 === 0 ? 'var(--mustard)' : 'var(--teal)'}"></div>
-        <div class="card-note">${index === 0 ? '即将出发' : '已收进相册'} ✦</div>
-        <div class="card-title">${item.title}</div>
-        <div class="card-route">${item.route}</div>
-        <div class="card-date">${item.year}.${item.startDate} — ${item.endDate} · ${item.duration}</div>
-      </button>
+    const yearGroups = [];
+    trips.forEach((item) => {
+      let group = yearGroups.find((g) => g.year === item.year);
+      if (!group) { group = { year: item.year, items: [] }; yearGroups.push(group); }
+      group.items.push(item);
+    });
+    const tripsHtml = yearGroups.map((group) => `
+      <div class="scr-year-heading">${group.year}</div>
+      <div class="scr-cards">
+        ${group.items.map((item, index) => `
+          <button type="button" class="index-card" style="--r:${index % 2 === 0 ? '-1.5deg' : '1.5deg'}" data-action="open-trip" data-trip-id="${item.id}">
+            <div class="tape" style="background:${index % 2 === 0 ? 'var(--mustard)' : 'var(--teal)'}"></div>
+            <div class="card-note">${item === trips[0] ? '即将出发' : '已收进相册'} ✦</div>
+            <div class="card-title">${item.title}</div>
+            <div class="card-route">${item.route}</div>
+            <div class="card-date num">${item.startDate} — ${item.endDate} · ${item.duration}</div>
+          </button>
+        `).join('')}
+      </div>
     `).join('');
 
     return `
@@ -74,7 +86,7 @@
         </div>
         <div class="scr-stats">${statsHtml}</div>
         <div class="scr-section-title">✦ 我的旅程</div>
-        <div class="scr-cards">${tripsHtml}</div>
+        ${tripsHtml}
       </div>
     `;
   }
@@ -89,7 +101,7 @@
         <div class="scr-dayrail" id="scr-dayrail">
           ${days.map((day) => `
             <button type="button" class="scr-daystub ${day.index === state.dayIndex ? 'active' : ''}" style="--r:${rotations[day.index % rotations.length]}" data-action="select-day" data-index="${day.index}">
-              <b>${day.dayLabel}</b><span>${day.date} ${day.dateCity}</span>
+              <b class="num">${day.dayLabel}</b><span class="num">${day.date} ${day.dateCity}</span>
             </button>
           `).join('')}
         </div>
@@ -116,12 +128,12 @@
       <div class="scr-page">
         <div class="scr-itin-head">
           <button type="button" class="scr-trip-picker" data-action="open-trip-picker">${trip.title} <span>▾</span></button>
-          <div class="scr-itin-duration">${trip.duration}</div>
+          <div class="scr-itin-duration num">${trip.duration}</div>
         </div>
         ${renderDayRail()}
         <div class="scr-journal">
           <div class="scr-journal-tape"></div>
-          <div class="scr-journal-date">DAY ${day.dayLabel} · ${day.date}</div>
+          <div class="scr-journal-date num">DAY ${day.dayLabel} · ${day.date}</div>
           <div class="scr-journal-title">${esc(day.title)}</div>
           <div class="scr-journal-summary">${esc(day.summary)}</div>
           <div class="scr-tags">${tagsHtml}</div>
@@ -135,6 +147,29 @@
     `;
   }
 
+  function buildDonut(summary) {
+    if (summary.pending) return '';
+    const r = 45;
+    const circumference = 2 * Math.PI * r;
+    let cumulative = 0;
+    const segments = summary.expenses.filter((c) => c.total > 0).map((category) => {
+      const dash = (category.width / 100) * circumference;
+      const offset = (cumulative / 100) * circumference;
+      cumulative += category.width;
+      const color = BUDGET_COLORS[category.id] || '#9a8a6a';
+      return `<circle cx="50" cy="50" r="${r}" fill="none" stroke="${color}" stroke-width="16" stroke-dasharray="${dash.toFixed(2)} ${circumference.toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 50 50)" />`;
+    }).join('');
+    const legendHtml = summary.expenses.filter((c) => c.total > 0).map((category) => `
+      <div class="scr-donut-legend-row"><span class="scr-donut-dot" style="background:${BUDGET_COLORS[category.id] || '#9a8a6a'}"></span>${category.name} · <span class="num">${category.width}%</span></div>
+    `).join('');
+    return `
+      <div class="scr-donut-card">
+        <svg class="scr-donut-svg" viewBox="0 0 100 100" role="img" aria-label="花销占比">${segments}</svg>
+        <div class="scr-donut-legend">${legendHtml}</div>
+      </div>
+    `;
+  }
+
   function renderSpending() {
     const trip = currentTrip();
     const summary = buildExpenseSummary(expenseDefinitionsByTrip[trip.id], trip.travellerCount);
@@ -144,7 +179,7 @@
         <button type="button" class="scr-budget-row" data-action="toggle-expense" data-id="${category.id}" aria-expanded="${state.activeExpenseId === category.id ? 'true' : 'false'}">
           <img class="scr-budget-icon" src="${category.icon}" alt="" />
           <div class="scr-budget-body">
-            <div class="scr-budget-top"><span>${category.name}</span><span>${category.pending ? '待补充' : `¥${category.amountLabel}`}</span></div>
+            <div class="scr-budget-top"><span>${category.name}</span><span class="num">${category.pending ? '待补充' : `¥${category.amountLabel}`}</span></div>
             <div class="scr-budget-tape" style="width:${category.width}%;background:${BUDGET_COLORS[category.id] || '#9a8a6a'}"></div>
           </div>
           <span class="scr-budget-chevron ${state.activeExpenseId === category.id ? 'open' : ''}">›</span>
@@ -154,7 +189,7 @@
             ${category.details.map((detail) => `
               <div class="scr-budget-detail-row">
                 <div><div class="scr-budget-detail-title">${esc(detail.title)}</div>${detail.note ? `<div class="scr-budget-detail-note">${esc(detail.note)}</div>` : ''}</div>
-                ${detail.amountLabel ? `<div class="scr-budget-detail-amount">¥${detail.amountLabel}</div>` : ''}
+                ${detail.amountLabel ? `<div class="scr-budget-detail-amount num">¥${detail.amountLabel}</div>` : ''}
               </div>
             `).join('')}
           </div>
@@ -169,9 +204,10 @@
         </div>
         <div class="scr-receipt">
           <div class="scr-receipt-label">${trip.title} · 总花销</div>
-          <div class="scr-receipt-total">${summary.pending ? '待补充' : `¥${summary.total}`}</div>
-          <div class="scr-receipt-sub">${summary.pending ? '金额待填写' : `人均 ¥${summary.perPerson} · ${trip.travellerCount}人同行`}</div>
+          <div class="scr-receipt-total num">${summary.pending ? '待补充' : `¥${summary.total}`}</div>
+          <div class="scr-receipt-sub num">${summary.pending ? '金额待填写' : `人均 ¥${summary.perPerson} · ${trip.travellerCount}人同行`}</div>
         </div>
+        ${buildDonut(summary)}
         <div class="scr-budget-rows">${rowsHtml}</div>
       </div>
     `;
@@ -251,12 +287,21 @@
   }
 
   function showStatModal(statId) {
-    const item = footprintStats.find((stat) => stat.id === statId);
-    if (!item || !item.detail) return;
+    let body = '';
+    if (statId === 'countries' || statId === 'cities') {
+      const item = footprintStats.find((stat) => stat.id === statId);
+      if (!item || !item.detail) return;
+      body = esc(item.detail).replace(/\n/g, '<br />');
+    } else if (statId === 'trips') {
+      body = trips.map((t) => esc(t.title)).join('<br />');
+    } else if (statId === 'days') {
+      body = trips.map((t) => `${esc(t.title)}<br /><span class="num">${t.year}.${t.startDate} ～ ${t.endDate}</span>`).join('<br /><br />');
+    } else {
+      return;
+    }
     openModal(`
       <div class="scr-modal-title">足迹 ✦</div>
-      <div class="scr-modal-body">${esc(item.detail).replace(/\n/g, '<br />')}</div>
-      <button type="button" class="scr-modal-confirm" data-action="close-modal">知道了</button>
+      <div class="scr-modal-body">${body}</div>
     `);
   }
 
