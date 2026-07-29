@@ -139,7 +139,8 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .scr-daystub { all: unset; box-sizing: border-box; flex: 0 0 auto; background: var(--card); padding: 10px 16px; text-align: center; box-shadow: 0 6px 14px rgba(43,27,14,.14); transform: rotate(var(--r, -2deg)); cursor: pointer; font-family: -apple-system, sans-serif; min-width: 78px; }
 .scr-daystub b { display: block; font-size: 18px; }
 .scr-daystub span { font-size: 10px; color: var(--muted); white-space: nowrap; }
-.scr-daystub.active { background: var(--ink); color: var(--card); position: relative; }
+.scr-daystub.active { background: var(--red); color: var(--card); position: relative; }
+.scr-daystub.active span { color: var(--card); }
 .scr-daystub.active::before { content: ""; position: absolute; top: -7px; left: 50%; margin-left: -6px; width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #e6786a, #a8342a); box-shadow: 0 2px 4px rgba(0,0,0,.3); }
 @media (hover: hover) and (pointer: fine) {
   .scr-daystub:not(.active):hover { box-shadow: 0 10px 20px rgba(43,27,14,.2); }
