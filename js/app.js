@@ -63,7 +63,7 @@
       group.items.push(item);
     });
     const tripsHtml = yearGroups.map((group) => `
-      <div class="scr-year-heading">${group.year}</div>
+      <div class="scr-year-heading"><span class="num">${group.year}</span></div>
       <div class="scr-cards">
         ${group.items.map((item, index) => `
           <button type="button" class="index-card" style="--r:${index % 2 === 0 ? '-1.5deg' : '1.5deg'}" data-action="open-trip" data-trip-id="${item.id}">
