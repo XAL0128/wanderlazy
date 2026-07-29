@@ -136,7 +136,7 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 /* ===== Itinerary ===== */
 .scr-dayrail-wrap { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 22px; }
 .scr-rail-arrow { all: unset; box-sizing: border-box; flex: none; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--muted); cursor: pointer; }
-.scr-dayrail { display: flex; flex: 1; min-width: 0; gap: 14px; overflow-x: auto; padding: 8px 4px 14px; scrollbar-width: thin; }
+.scr-dayrail { display: flex; flex: 1; min-width: 0; gap: 14px; overflow-x: auto; padding: 8px 4px 14px; scrollbar-width: thin; justify-content: center; justify-content: safe center; }
 .scr-daystub { all: unset; box-sizing: border-box; flex: 0 0 auto; background: var(--card); padding: 10px 16px; text-align: center; box-shadow: 0 6px 14px rgba(43,27,14,.14); transform: rotate(var(--r, -2deg)); cursor: pointer; font-family: -apple-system, sans-serif; min-width: 78px; }
 .scr-daystub b { display: block; font-size: 18px; }
 .scr-daystub span { font-size: 10px; color: var(--muted); white-space: nowrap; }
@@ -151,11 +151,11 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .scr-card-label { font-size: 14px; font-weight: 700; color: var(--forest); margin-bottom: 14px; }
 
 /* Torn deckle-edge card silhouette, shared by the itinerary page's content cards */
-.scr-journal, .scr-hotel, .scr-timeline-card { clip-path: polygon(0.5% 2%,3% 0%,7% 1.5%,12% 0.3%,17% 1.8%,22% 0.2%,28% 1.5%,34% 0.4%,40% 1.7%,46% 0.3%,52% 1.6%,58% 0.2%,64% 1.8%,70% 0.4%,76% 1.6%,82% 0.3%,88% 1.7%,94% 0.2%,99.5% 2%,100% 6%,98.7% 12%,100% 18%,98.5% 25%,100% 32%,98.7% 40%,100% 48%,98.5% 56%,100% 64%,98.7% 72%,100% 80%,98.5% 88%,100% 94%,99.5% 98%,96% 100%,92% 98.5%,86% 100%,80% 98.3%,74% 100%,68% 98.5%,62% 100%,56% 98.3%,50% 100%,44% 98.5%,38% 100%,32% 98.3%,26% 100%,20% 98.5%,14% 100%,8% 98.3%,3% 100%,0.5% 98%,2% 92%,0% 84%,2% 76%,0% 68%,2% 60%,0% 52%,2% 44%,0% 36%,2% 28%,0% 20%,2% 12%,0.5% 6%); }
+.scr-journal-surface, .scr-hotel, .scr-timeline-card { clip-path: polygon(0% 1.5%,12.5% 1.6%,25% 0.6%,37.5% 0.6%,50% 1.2%,62.5% 1.7%,75% 0.6%,87.5% 0.2%,100% 1.8%,100% 0%,99% 12.5%,98.1% 25%,99.6% 37.5%,99.3% 50%,98.4% 62.5%,99% 75%,99.5% 87.5%,98.8% 100%,100% 100%,87.5% 98.4%,75% 98.3%,62.5% 99.9%,50% 99.1%,37.5% 98.3%,25% 99%,12.5% 99.5%,0% 99.1%,1.7% 100%,1.3% 87.5%,0.1% 75%,1.4% 62.5%,1.4% 50%,0.4% 37.5%,1% 25%,1.5% 12.5%,0.8% 0%); }
 
-.scr-journal { position: relative; background: var(--card); padding: 28px 32px 30px; box-shadow: 0 12px 26px rgba(43,27,14,.16); margin-bottom: 22px; }
-.scr-journal-tape { position: absolute; top: -12px; right: 60px; width: 90px; height: 28px; background: var(--teal); opacity: .85; transform: rotate(4deg); }
-.scr-journal-date { font-size: 15px; color: var(--red); margin-bottom: 4px; letter-spacing: .02em; }
+.scr-journal { position: relative; margin-bottom: 22px; }
+.scr-journal-surface { background: var(--card); padding: 28px 32px 30px; box-shadow: 0 12px 26px rgba(43,27,14,.16); }
+.scr-journal-tape { position: absolute; top: -12px; right: 60px; width: 90px; height: 28px; background: var(--teal); opacity: .85; transform: rotate(4deg); z-index: 1; }
 .scr-journal-title { font-size: 26px; font-weight: 700; margin: 0 0 12px; }
 .scr-journal-summary { font-size: 15px; line-height: 1.75; margin-bottom: 14px; }
 .scr-tags { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -163,20 +163,21 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 
 .scr-hotel { background: var(--card); padding: 20px 24px; box-shadow: 0 8px 18px rgba(43,27,14,.14); margin-bottom: 22px; }
 .scr-hotel b { display: block; font-size: 16px; margin-bottom: 6px; }
-.scr-hotel span { font-family: -apple-system, sans-serif; font-size: 12px; color: var(--muted); }
+.scr-hotel span { display: flex; align-items: center; gap: 6px; font-family: -apple-system, sans-serif; font-size: 12px; color: var(--muted); }
+.scr-pin-icon { width: 13px; height: 13px; flex: none; opacity: .8; }
 
 .scr-timeline-card { background: var(--card); padding: 26px 32px 8px; box-shadow: 0 12px 26px rgba(43,27,14,.16); margin-bottom: 22px; }
-.scr-timeline-row { display: flex; gap: 14px; }
-.scr-timeline-time { width: 46px; flex: none; padding-top: 2px; font-size: 12px; color: var(--muted); }
+.scr-timeline-row { display: flex; gap: 6px; }
+.scr-timeline-time { width: 46px; flex: none; padding-top: 3px; font-size: 12px; line-height: 16px; color: var(--muted); }
 .scr-timeline-track { width: 16px; flex: none; position: relative; }
-.scr-timeline-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--red); margin-top: 6px; position: relative; z-index: 1; }
-.scr-timeline-line { position: absolute; left: 4px; top: 15px; bottom: -19px; width: 1px; background: repeating-linear-gradient(var(--gold) 0 4px, transparent 4px 8px); }
+.scr-timeline-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--red); margin-top: 6.5px; position: relative; z-index: 1; }
+.scr-timeline-line { position: absolute; left: 4px; top: 15.5px; bottom: -19px; width: 1px; background: repeating-linear-gradient(var(--gold) 0 4px, transparent 4px 8px); }
 .scr-timeline-row:last-child .scr-timeline-line { display: none; }
 .scr-timeline-body { padding-bottom: 22px; min-width: 0; }
 .scr-timeline-title { font-weight: 700; font-size: 16px; }
 .scr-timeline-note { font-family: -apple-system, sans-serif; font-size: 12px; color: var(--muted); margin-top: 3px; }
 
-.scr-sticky { background: #f3d95c; padding: 18px 20px 18px 26px; box-shadow: 0 8px 18px rgba(43,27,14,.18); border-left: 3px solid var(--red); font-size: 15px; line-height: 1.6; color: #4a3a10; display: flex; align-items: center; }
+.scr-sticky { background: var(--card); padding: 18px 20px 18px 26px; box-shadow: 0 8px 18px rgba(43,27,14,.14); border-left: 3px solid var(--red); font-size: 15px; line-height: 1.6; color: var(--ink); display: flex; align-items: center; }
 
 /* ===== Spending ===== */
 .scr-receipt { position: relative; max-width: 640px; margin: 0 auto 26px; background: var(--card); padding: 26px 32px 24px; box-shadow: 0 12px 26px rgba(43,27,14,.18); clip-path: polygon(0 0,100% 0,100% 96%,95% 100%,90% 96%,85% 100%,80% 96%,75% 100%,70% 96%,65% 100%,60% 96%,55% 100%,50% 96%,45% 100%,40% 96%,35% 100%,30% 96%,25% 100%,20% 96%,15% 100%,10% 96%,5% 100%,0 96%); }
@@ -261,7 +262,7 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
   .scr-trip-picker { font-size: 21px; }
   .scr-donut-card { padding: 18px 20px; gap: 20px; }
   .scr-donut-svg { width: 120px; height: 120px; }
-  .scr-journal { padding: 22px 20px 24px; }
+  .scr-journal-surface { padding: 22px 20px 24px; }
   .scr-journal-title { font-size: 21px; }
   .scr-timeline-card { padding: 22px 20px 8px; }
 

@@ -46,6 +46,13 @@
   }
 
   const CAMERA_ICON = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232b1b0e' stroke-width='2'><rect x='3' y='5' width='18' height='14' rx='2'/><circle cx='12' cy='12' r='4'/></svg>";
+  const PIN_ICON = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236a5432' stroke-width='2'><path d='M12 21s-7-7.2-7-12a7 7 0 0 1 14 0c0 4.8-7 12-7 12z'/><circle cx='12' cy='9' r='2.5'/></svg>";
+  const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
+
+  function weekdayOf(monthDay, year) {
+    const [month, day] = monthDay.split('.').map(Number);
+    return WEEKDAYS[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
+  }
 
   function renderFootprints() {
     const rotations = { countries: '-3deg', cities: '2deg', trips: '-1.5deg', days: '2.5deg' };
@@ -134,7 +141,7 @@
     `).join('');
 
     const hasHotel = day.hotel !== '—';
-    const hotelHtml = hasHotel ? `<div class="scr-hotel"><b>住宿 · ${esc(day.hotel)}</b><span>${esc(day.hotelAddress)}</span></div>` : '';
+    const hotelHtml = hasHotel ? `<div class="scr-hotel"><b>住宿 · ${esc(day.hotel)}</b><span><img class="scr-pin-icon" src="${PIN_ICON}" alt="" />${esc(day.hotelAddress)}</span></div>` : '';
 
     return `
       <div class="scr-page">
@@ -145,11 +152,12 @@
         ${renderDayRail()}
         <div class="scr-journal">
           <div class="scr-journal-tape"></div>
-          <div class="scr-card-label">✦ 行程总览</div>
-          <div class="scr-journal-date num">DAY ${day.dayLabel} · ${day.date}</div>
-          <div class="scr-journal-title">${esc(day.title)}</div>
-          <div class="scr-journal-summary">${esc(day.summary)}</div>
-          <div class="scr-tags">${tagsHtml}</div>
+          <div class="scr-journal-surface">
+            <div class="scr-card-label">✦ DAY <span class="num">${day.dayLabel}</span> · <span class="num">${day.date}</span> · 周${weekdayOf(day.date, trip.year)}</div>
+            <div class="scr-journal-title">${esc(day.title)}</div>
+            <div class="scr-journal-summary">${esc(day.summary)}</div>
+            <div class="scr-tags">${tagsHtml}</div>
+          </div>
         </div>
         ${hotelHtml}
         <div class="scr-timeline-card">
