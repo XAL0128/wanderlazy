@@ -256,7 +256,7 @@
     if (state.activeTab === 'itinerary') {
       const rail = document.getElementById('scr-dayrail');
       const activeStub = rail && rail.querySelector('.scr-daystub.active');
-      if (activeStub) activeStub.scrollIntoView({ inline: 'center', block: 'nearest' });
+      if (activeStub) activeStub.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
       if (rail && rail.children.length > 1) dayStep = rail.children[1].offsetLeft - rail.children[0].offsetLeft;
     }
   }
