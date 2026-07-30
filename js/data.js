@@ -12,13 +12,13 @@ function calculateTripDuration(startDate, endDate, year) {
 
 const trip = {
   id: 'australia-national-day-2026',
-  title: '国庆澳洲游',
+  title: '国庆澳洲游', // 足迹页胶片墙 NO.01 下面的小标题
   startDate: '09.25',
   endDate: '10.07',
   year: 2026,
   travellerCount: 2,
   route: '墨尔本 → 凯恩斯 → 悉尼',
-  photo: 'assets/photos/australia-sydney-opera-house-harbour-bridge.jpg'
+  photo: 'assets/photos/australia-sydney-opera-house-harbour-bridge.jpg' // 足迹页胶片墙 NO.01 大图，图片先转 WebP 再换（见 CLAUDE.md）
 };
 
 trip.duration = calculateTripDuration(trip.startDate, trip.endDate, trip.year);
@@ -64,18 +64,19 @@ prepareDays(graduationDays);
 
 const graduationTrip = {
   id: 'graduation-trip-northwest-2025',
-  title: '212毕业旅行',
+  title: '212毕业旅行', // 足迹页胶片墙 NO.02 下面的小标题
   startDate: '06.05',
   endDate: '06.12',
   year: 2025,
   travellerCount: 4,
   route: '西安 → 张掖 → 兰州',
-  photo: 'assets/photos/china-graduation-trip-cover.jpg',
+  photo: 'assets/photos/china-graduation-trip-cover.jpg', // 足迹页胶片墙 NO.02 大图，图片先转 WebP 再换（见 CLAUDE.md）
   days: graduationDays
 };
 
 graduationTrip.duration = calculateTripDuration(graduationTrip.startDate, graduationTrip.endDate, graduationTrip.year);
 trip.days = days;
+// 足迹页胶片墙的照片和编号顺序 = 这个数组的顺序（新增旅行会自动排到 NO.03、NO.04...）
 const trips = [trip, graduationTrip];
 
 const travellerCount = 2;

@@ -87,7 +87,9 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .scr-wordmark { font-family: var(--font-hand); font-size: 30px; }
 .scr-links { display: flex; gap: 22px; }
 .scr-links button { all: unset; cursor: pointer; font-size: 14px; color: var(--muted); }
-.scr-links button.active { color: var(--red); font-weight: 700; border-bottom: 2px solid var(--red); padding-bottom: 2px; }
+/* --red 直接压在 --bg 牛皮纸底色上时对比度只有 4.29:1，不够 WCAG AA 正文文字要求的 4.5:1
+   （--red 在卡片 --card 底色上是 5.37:1，没问题，只有落在页面背景上时不够），这里单独调深一档 */
+.scr-links button.active { color: #a03429; font-weight: 700; border-bottom: 2px solid #a03429; padding-bottom: 2px; }
 @media (hover: hover) and (pointer: fine) {
   .scr-links button:hover { color: var(--ink); }
 }

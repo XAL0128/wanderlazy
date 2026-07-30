@@ -65,11 +65,14 @@
       <div class="stamp" style="--r:${rotations[item.id] || '-2deg'}"><b class="num-hand">${item.value}</b><span>${item.label}</span></div>
     `).join('');
 
+    // 足迹页顶部的挂绳胶片墙：每张照片对应 js/data.js 里 trip 对象的 photo（大图）
+    // 和 title（NO.xx 下面那行小标题）。想换图/加图/改标题，去 data.js 改这两个
+    // 字段就行，这里的渲染逻辑不用动——顺序就是 trips 数组的顺序。
     const filmStripHtml = trips.map((item, index) => `
       <div class="fw-frame" style="--r:${index % 2 === 0 ? '-2deg' : '2deg'}">
         <div class="fw-clip"></div><div class="fw-string"></div>
         <button type="button" class="fw-frame-photo-btn" data-action="open-photo" data-src="${item.photo}" data-alt="${esc(item.title)}">
-          <img class="fw-frame-photo" src="${item.photo}" alt="${esc(item.title)}" />
+          <img class="fw-frame-photo" src="${item.photo}" alt="${esc(item.title)}" width="400" height="280" />
           <div class="fw-tag">NO.${String(index + 1).padStart(2, '0')}</div>
         </button>
         <div class="fw-cap">${esc(item.title)}</div>
@@ -86,7 +89,7 @@
       <div class="tl-year"><div class="tl-year-node"><img src="${CAMERA_ICON}" alt="" /></div><div class="tl-year-label num-hand">${group.year}</div></div>
       ${group.items.map((item) => `
         <button type="button" class="tl-film-card" data-action="open-trip" data-trip-id="${item.id}">
-          <div class="tl-film-photo"><img src="${item.photo}" alt="${esc(item.title)}" /></div>
+          <div class="tl-film-photo"><img src="${item.photo}" alt="${esc(item.title)}" width="300" height="200" loading="lazy" /></div>
           <div class="tl-film-body">
             <div class="tl-film-title">${esc(item.title)}</div>
             <div class="tl-film-route">${esc(item.route)}</div>
@@ -273,12 +276,29 @@
     render();
   }
 
+  // 给弹窗/灯箱这类 overlay 补上键盘可达性：Esc 关闭 + 打开时把焦点移进去。
+  // 返回的 close() 会同时清理这个键盘监听，调用方要用它关闭，不要直接 overlay.remove()。
+  function makeOverlayCloser(overlay, focusTarget) {
+    const onKeydown = (e) => {
+      if (e.key === 'Escape') close();
+    };
+    function close() {
+      document.removeEventListener('keydown', onKeydown);
+      overlay.remove();
+    }
+    document.addEventListener('keydown', onKeydown);
+    if (focusTarget) focusTarget.focus();
+    return close;
+  }
+
   function openModal(innerHtml, onClick) {
     const overlay = document.createElement('div');
     overlay.className = 'scr-modal-overlay';
-    overlay.innerHTML = `<div class="scr-modal-card"><div class="scr-modal-tape"></div>${innerHtml}</div>`;
+    overlay.innerHTML = `<div class="scr-modal-card" role="dialog" aria-modal="true" tabindex="-1"><div class="scr-modal-tape"></div>${innerHtml}</div>`;
+    const close = makeOverlayCloser(overlay, overlay.querySelector('.scr-modal-card'));
+    overlay.close = close;
     overlay.addEventListener('click', (e) => {
-      if (e.target === overlay || e.target.dataset.action === 'close-modal') { overlay.remove(); return; }
+      if (e.target === overlay || e.target.dataset.action === 'close-modal') { close(); return; }
       if (onClick) onClick(e, overlay);
     });
     document.body.appendChild(overlay);
@@ -307,8 +327,13 @@
   function openPhotoLightbox(src, alt) {
     const overlay = document.createElement('div');
     overlay.className = 'scr-lightbox-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', alt || '照片预览');
+    overlay.tabIndex = -1;
     overlay.innerHTML = `<img class="scr-lightbox-img" src="${src}" alt="${esc(alt)}" />`;
-    overlay.addEventListener('click', () => overlay.remove());
+    const close = makeOverlayCloser(overlay, overlay);
+    overlay.addEventListener('click', close);
     document.body.appendChild(overlay);
   }
 
@@ -319,7 +344,7 @@
       <button type="button" class="scr-modal-confirm" data-action="close-modal">取消</button>
     `, (e, overlay) => {
       const option = e.target.closest('.scr-modal-option');
-      if (option) { applyTrip(option.dataset.tripId); overlay.remove(); render(); }
+      if (option) { applyTrip(option.dataset.tripId); overlay.close(); render(); }
     });
   }
 
