@@ -245,6 +245,12 @@
   }
 
   function render() {
+    // render() 每次都会把 #app 整个 innerHTML 重建，日期轴也会跟着被销毁重建，
+    // 新元素的 scrollLeft 永远是 0。不在重建前后保留滚动位置的话，每次点击都会
+    // 变成「瞬间跳回最左边，再从头平滑滚动到目标日期」，越靠右的日期跳动感越明显。
+    const prevRail = document.getElementById('scr-dayrail');
+    const prevScrollLeft = prevRail ? prevRail.scrollLeft : null;
+
     let bodyHtml;
     if (state.activeTab === 'footprints') bodyHtml = renderFootprints();
     else if (state.activeTab === 'itinerary') bodyHtml = renderItinerary();
@@ -255,6 +261,7 @@
 
     if (state.activeTab === 'itinerary') {
       const rail = document.getElementById('scr-dayrail');
+      if (rail && prevScrollLeft !== null) rail.scrollLeft = prevScrollLeft;
       const activeStub = rail && rail.querySelector('.scr-daystub.active');
       if (activeStub) activeStub.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
       if (rail && rail.children.length > 1) dayStep = rail.children[1].offsetLeft - rail.children[0].offsetLeft;
@@ -272,7 +279,9 @@
 
   function moveDay(direction) {
     const days = currentTrip().days;
-    state.dayIndex = Math.max(0, Math.min(state.dayIndex + direction, days.length - 1));
+    const next = Math.max(0, Math.min(state.dayIndex + direction, days.length - 1));
+    if (next === state.dayIndex) return;
+    state.dayIndex = next;
     render();
   }
 
