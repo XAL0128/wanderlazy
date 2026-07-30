@@ -20,13 +20,6 @@
     }[c]));
   }
 
-  // → 混排在中文正文里时，不同设备的字体回退顺序不一样，字形基线会跟着变。
-  // 任何会显示给用户看的文本（非 HTML 属性）都用这个而不是 esc()，统一把 →
-  // 换成固定字体渲染，不依赖字体回退。
-  function richText(str) {
-    return esc(str).replace(/→/g, '<span class="ink-arrow">→</span>');
-  }
-
   const BUDGET_COLORS = {
     accommodation: '#b23a2e',
     transport: '#3e7a6b',
@@ -79,7 +72,7 @@
           <img class="fw-frame-photo" src="${item.photo}" alt="${esc(item.title)}" />
           <div class="fw-tag">NO.${String(index + 1).padStart(2, '0')}</div>
         </button>
-        <div class="fw-cap">${richText(item.title)}</div>
+        <div class="fw-cap">${esc(item.title)}</div>
       </div>
     `).join('');
 
@@ -95,8 +88,8 @@
         <button type="button" class="tl-film-card" data-action="open-trip" data-trip-id="${item.id}">
           <div class="tl-film-photo"><img src="${item.photo}" alt="${esc(item.title)}" /></div>
           <div class="tl-film-body">
-            <div class="tl-film-title">${richText(item.title)}</div>
-            <div class="tl-film-route">${richText(item.route)}</div>
+            <div class="tl-film-title">${esc(item.title)}</div>
+            <div class="tl-film-route">${esc(item.route)}</div>
             <div class="tl-film-date num">${item.startDate} — ${item.endDate} · ${item.duration}</div>
           </div>
         </button>
@@ -139,22 +132,22 @@
   function renderItinerary() {
     const trip = currentTrip();
     const day = trip.days[state.dayIndex];
-    const tagsHtml = day.tags.map((tag) => `<span>${richText(tag)}</span>`).join('');
+    const tagsHtml = day.tags.map((tag) => `<span>${esc(tag)}</span>`).join('');
     const timelineHtml = day.timeline.map((item) => `
       <div class="scr-timeline-row">
         <div class="scr-timeline-time num">${item.time}</div>
         <div class="scr-timeline-track"><div class="scr-timeline-dot"></div><div class="scr-timeline-line"></div></div>
-        <div class="scr-timeline-body"><div class="scr-timeline-title">${richText(item.title)}</div><div class="scr-timeline-note">${richText(item.note)}</div></div>
+        <div class="scr-timeline-body"><div class="scr-timeline-title">${esc(item.title)}</div><div class="scr-timeline-note">${esc(item.note)}</div></div>
       </div>
     `).join('');
 
     const hasHotel = day.hotel !== '—';
-    const hotelHtml = hasHotel ? `<div class="scr-hotel"><b>住宿 · ${richText(day.hotel)}</b><span><img class="scr-pin-icon" src="${PIN_ICON}" alt="" />${richText(day.hotelAddress)}</span></div>` : '';
+    const hotelHtml = hasHotel ? `<div class="scr-hotel"><b>住宿 · ${esc(day.hotel)}</b><span><img class="scr-pin-icon" src="${PIN_ICON}" alt="" />${esc(day.hotelAddress)}</span></div>` : '';
 
     return `
       <div class="scr-page">
         <div class="scr-itin-head">
-          <button type="button" class="scr-trip-picker" data-action="open-trip-picker">${richText(trip.title)} <span>▾</span></button>
+          <button type="button" class="scr-trip-picker" data-action="open-trip-picker">${esc(trip.title)} <span>▾</span></button>
           <div class="scr-itin-duration num">${trip.duration}</div>
         </div>
         ${renderDayRail()}
@@ -162,8 +155,8 @@
           <div class="scr-journal-tape"></div>
           <div class="scr-journal-surface">
             <div class="scr-card-label">✦ DAY <span class="num">${day.dayLabel}</span> · <span class="num">${day.date}</span> · 周${weekdayOf(day.date, trip.year)}</div>
-            <div class="scr-journal-title">${richText(day.title)}</div>
-            <div class="scr-journal-summary">${richText(day.summary)}</div>
+            <div class="scr-journal-title">${esc(day.title)}</div>
+            <div class="scr-journal-summary">${esc(day.summary)}</div>
             <div class="scr-tags">${tagsHtml}</div>
           </div>
         </div>
@@ -172,7 +165,7 @@
           <div class="scr-card-label">✦ 今日安排</div>
           ${timelineHtml}
         </div>
-        <div class="scr-sticky">☀ ${richText(day.reminder)}</div>
+        <div class="scr-sticky">☀ ${esc(day.reminder)}</div>
       </div>
     `;
   }
@@ -187,7 +180,7 @@
         <div class="spend-detail">
           ${category.details.map((detail) => `
             <div class="spend-detail-row">
-              <div><div class="spend-detail-title">${richText(detail.title)}</div>${detail.note ? `<div class="spend-detail-note">${richText(detail.note)}</div>` : ''}</div>
+              <div><div class="spend-detail-title">${esc(detail.title)}</div>${detail.note ? `<div class="spend-detail-note">${esc(detail.note)}</div>` : ''}</div>
               ${detail.amountLabel ? `<div class="spend-detail-amount num">¥${detail.amountLabel}</div>` : ''}
             </div>
           `).join('')}
@@ -197,7 +190,7 @@
         <button type="button" class="spend-card${isOpen ? ' open' : ''}" style="--r:${CARD_ROTATIONS[i % CARD_ROTATIONS.length]}deg" data-action="toggle-expense" data-id="${category.id}" aria-expanded="${isOpen}">
           <div class="spend-tab" style="background:${BUDGET_COLORS[category.id] || '#9a8a6a'}"></div>
           <div class="spend-hole"></div>
-          <div class="spend-row"><b>${richText(category.name)}</b><span class="spend-amt num">${category.pending ? '待补充' : `¥${category.amountLabel}`}</span></div>
+          <div class="spend-row"><b>${esc(category.name)}</b><span class="spend-amt num">${category.pending ? '待补充' : `¥${category.amountLabel}`}</span></div>
           <div class="spend-sub num">${category.pending ? '暂无记录' : `占比 ${category.width}% · ${category.details.length} 笔`}<span class="spend-chevron ${isOpen ? 'open' : ''}">›</span></div>
           ${detailHtml}
         </button>
@@ -207,10 +200,10 @@
     return `
       <div class="scr-page">
         <div class="scr-itin-head">
-          <button type="button" class="scr-trip-picker" data-action="open-trip-picker">${richText(trip.title)} <span>▾</span></button>
+          <button type="button" class="scr-trip-picker" data-action="open-trip-picker">${esc(trip.title)} <span>▾</span></button>
         </div>
         <div class="spend-master">
-          <div class="spend-master-label">TRIP LEDGER · ${richText(trip.title)}</div>
+          <div class="spend-master-label">TRIP LEDGER · ${esc(trip.title)}</div>
           <div class="spend-master-amt num">${summary.pending ? '待补充' : `¥${summary.total}`}</div>
           <div class="spend-master-sub num">${summary.pending ? '金额待填写' : `人均 ¥${summary.perPerson} · ${trip.travellerCount}人同行`}</div>
         </div>
@@ -227,11 +220,11 @@
       <button type="button" class="scr-guide-card" style="--r:${rotations[index % rotations.length]}" data-action="toggle-guide" data-id="${item.id}" aria-expanded="${state.activeGuideId === item.id ? 'true' : 'false'}">
         <div class="scr-guide-pin"></div>
         <img class="scr-guide-icon" src="${item.icon}" alt="" />
-        <div class="scr-guide-title">${richText(item.title)}</div>
-        <div class="scr-guide-sub">${richText(item.subtitle.replace(/\n/g, ' '))}</div>
+        <div class="scr-guide-title">${esc(item.title)}</div>
+        <div class="scr-guide-sub">${esc(item.subtitle.replace(/\n/g, ' '))}</div>
         ${state.activeGuideId === item.id ? `
           <div class="scr-guide-details">
-            ${item.details.map((detail) => `<div class="scr-guide-detail-row"><span>✦</span><span>${richText(detail)}</span></div>`).join('')}
+            ${item.details.map((detail) => `<div class="scr-guide-detail-row"><span>✦</span><span>${esc(detail)}</span></div>`).join('')}
           </div>
         ` : ''}
       </button>
@@ -240,7 +233,7 @@
     return `
       <div class="scr-page">
         <div class="scr-itin-head">
-          <button type="button" class="scr-trip-picker" data-action="open-trip-picker">${richText(trip.title)} <span>▾</span></button>
+          <button type="button" class="scr-trip-picker" data-action="open-trip-picker">${esc(trip.title)} <span>▾</span></button>
         </div>
         <div class="scr-section-title">✦ 攻略</div>
         <div class="scr-guide-grid">${cardsHtml}</div>
@@ -297,11 +290,11 @@
     if (statId === 'countries' || statId === 'cities') {
       const item = footprintStats.find((stat) => stat.id === statId);
       if (!item || !item.detail) return;
-      body = richText(item.detail).replace(/\n/g, '<br />');
+      body = esc(item.detail).replace(/\n/g, '<br />');
     } else if (statId === 'trips') {
-      body = trips.map((t) => richText(t.title)).join('<br />');
+      body = trips.map((t) => esc(t.title)).join('<br />');
     } else if (statId === 'days') {
-      body = trips.map((t) => `${richText(t.title)}<br /><span class="num">${t.year}.${t.startDate} ～ ${t.endDate}</span>`).join('<br /><br />');
+      body = trips.map((t) => `${esc(t.title)}<br /><span class="num">${t.year}.${t.startDate} ～ ${t.endDate}</span>`).join('<br /><br />');
     } else {
       return;
     }
