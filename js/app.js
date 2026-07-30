@@ -20,13 +20,11 @@
     }[c]));
   }
 
-  // Georgia 里嵌在正文中的数字是老式数字（高矮不一），任何会显示给用户看的文本
-  // （非 HTML 属性）一律用这个而不是 esc()：把数字统一换成 .num 字体，把 → 换成
-  // 不依赖字体回退的箭头，避免不同设备上的字形基线不一致。
+  // → 混排在中文正文里时，不同设备的字体回退顺序不一样，字形基线会跟着变。
+  // 任何会显示给用户看的文本（非 HTML 属性）都用这个而不是 esc()，统一把 →
+  // 换成固定字体渲染，不依赖字体回退。
   function richText(str) {
-    return esc(str)
-      .replace(/\d+(?:[:.]\d+)*/g, (m) => `<span class="num">${m}</span>`)
-      .replace(/→/g, '<span class="ink-arrow">→</span>');
+    return esc(str).replace(/→/g, '<span class="ink-arrow">→</span>');
   }
 
   const BUDGET_COLORS = {
