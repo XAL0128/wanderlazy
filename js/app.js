@@ -27,6 +27,7 @@
     food: '#c9ab6f',
     shopping: '#9a8a6a'
   };
+  const CARD_ROTATIONS = [-1.2, 1, -0.8, 1.3, -1, 0.9];
 
   function renderNav() {
     const tabs = [
@@ -169,68 +170,44 @@
     `;
   }
 
-  function buildDonut(summary) {
-    if (summary.pending) return '';
-    const r = 45;
-    const circumference = 2 * Math.PI * r;
-    let cumulative = 0;
-    const segments = summary.expenses.filter((c) => c.total > 0).map((category) => {
-      const dash = (category.width / 100) * circumference;
-      const offset = (cumulative / 100) * circumference;
-      cumulative += category.width;
-      const color = BUDGET_COLORS[category.id] || '#9a8a6a';
-      return `<circle cx="50" cy="50" r="${r}" fill="none" stroke="${color}" stroke-width="16" stroke-dasharray="${dash.toFixed(2)} ${circumference.toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 50 50)" />`;
-    }).join('');
-    const legendHtml = summary.expenses.filter((c) => c.total > 0).map((category) => `
-      <div class="scr-donut-legend-row"><span class="scr-donut-dot" style="background:${BUDGET_COLORS[category.id] || '#9a8a6a'}"></span>${category.name} · <span class="num">${category.width}%</span></div>
-    `).join('');
-    return `
-      <div class="scr-donut-card">
-        <svg class="scr-donut-svg" viewBox="0 0 100 100" role="img" aria-label="花销占比">${segments}</svg>
-        <div class="scr-donut-legend">${legendHtml}</div>
-      </div>
-    `;
-  }
-
   function renderSpending() {
     const trip = currentTrip();
     const summary = buildExpenseSummary(expenseDefinitionsByTrip[trip.id], trip.travellerCount);
 
-    const rowsHtml = summary.expenses.map((category) => `
-      <div class="scr-budget-group">
-        <button type="button" class="scr-budget-row" data-action="toggle-expense" data-id="${category.id}" aria-expanded="${state.activeExpenseId === category.id ? 'true' : 'false'}">
-          <img class="scr-budget-icon" src="${category.icon}" alt="" />
-          <div class="scr-budget-body">
-            <div class="scr-budget-top"><span>${category.name}</span><span class="num">${category.pending ? '待补充' : `¥${category.amountLabel}`}</span></div>
-            <div class="scr-budget-tape" style="width:${category.width}%;background:${BUDGET_COLORS[category.id] || '#9a8a6a'}"></div>
-          </div>
-          <span class="scr-budget-chevron ${state.activeExpenseId === category.id ? 'open' : ''}">›</span>
+    const cardsHtml = summary.expenses.map((category, i) => {
+      const isOpen = state.activeExpenseId === category.id;
+      const detailHtml = isOpen ? `
+        <div class="spend-detail">
+          ${category.details.map((detail) => `
+            <div class="spend-detail-row">
+              <div><div class="spend-detail-title">${esc(detail.title)}</div>${detail.note ? `<div class="spend-detail-note">${esc(detail.note)}</div>` : ''}</div>
+              ${detail.amountLabel ? `<div class="spend-detail-amount num">¥${detail.amountLabel}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>
+      ` : '';
+      return `
+        <button type="button" class="spend-card${isOpen ? ' open' : ''}" style="--r:${CARD_ROTATIONS[i % CARD_ROTATIONS.length]}deg" data-action="toggle-expense" data-id="${category.id}" aria-expanded="${isOpen}">
+          <div class="spend-tab" style="background:${BUDGET_COLORS[category.id] || '#9a8a6a'}"></div>
+          <div class="spend-hole"></div>
+          <div class="spend-row"><b>${esc(category.name)}</b><span class="spend-amt num">${category.pending ? '待补充' : `¥${category.amountLabel}`}</span></div>
+          <div class="spend-sub num">${category.pending ? '暂无记录' : `占比 ${category.width}% · ${category.details.length} 笔`}<span class="spend-chevron ${isOpen ? 'open' : ''}">›</span></div>
+          ${detailHtml}
         </button>
-        ${state.activeExpenseId === category.id ? `
-          <div class="scr-budget-detail">
-            ${category.details.map((detail) => `
-              <div class="scr-budget-detail-row">
-                <div><div class="scr-budget-detail-title">${esc(detail.title)}</div>${detail.note ? `<div class="scr-budget-detail-note">${esc(detail.note)}</div>` : ''}</div>
-                ${detail.amountLabel ? `<div class="scr-budget-detail-amount num">¥${detail.amountLabel}</div>` : ''}
-              </div>
-            `).join('')}
-          </div>
-        ` : ''}
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
     return `
       <div class="scr-page">
         <div class="scr-itin-head">
           <button type="button" class="scr-trip-picker" data-action="open-trip-picker">${trip.title} <span>▾</span></button>
         </div>
-        <div class="scr-receipt">
-          <div class="scr-receipt-label">${trip.title} · 总花销</div>
-          <div class="scr-receipt-total num">${summary.pending ? '待补充' : `¥${summary.total}`}</div>
-          <div class="scr-receipt-sub num">${summary.pending ? '金额待填写' : `人均 ¥${summary.perPerson} · ${trip.travellerCount}人同行`}</div>
+        <div class="spend-master">
+          <div class="spend-master-label">TRIP LEDGER · ${esc(trip.title)}</div>
+          <div class="spend-master-amt num">${summary.pending ? '待补充' : `¥${summary.total}`}</div>
+          <div class="spend-master-sub num">${summary.pending ? '金额待填写' : `人均 ¥${summary.perPerson} · ${trip.travellerCount}人同行`}</div>
         </div>
-        ${buildDonut(summary)}
-        <div class="scr-budget-rows">${rowsHtml}</div>
+        <div class="spend-stack">${cardsHtml}</div>
       </div>
     `;
   }

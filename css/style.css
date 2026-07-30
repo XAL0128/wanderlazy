@@ -62,7 +62,7 @@ body {
   .app-shell { min-height: calc(100vh - 56px); box-shadow: 0 24px 60px rgba(30, 20, 8, .28); }
 }
 
-button, .tl-film-card, .stamp-interactive, .scr-daystub, .scr-budget-row, .scr-guide-card,
+button, .tl-film-card, .stamp-interactive, .scr-daystub, .spend-card, .scr-guide-card,
 .scr-trip-picker, .scr-rail-arrow, .scr-modal-option, .scr-modal-confirm, .scr-links button {
   font-family: inherit;
 }
@@ -179,33 +179,32 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 
 .scr-sticky { background: var(--card); padding: 18px 20px; box-shadow: 0 8px 18px rgba(43,27,14,.14); font-size: 15px; line-height: 1.6; color: var(--ink); display: flex; align-items: center; }
 
-/* ===== Spending ===== */
-.scr-receipt { position: relative; max-width: 640px; margin: 0 auto 26px; background: var(--card); padding: 26px 32px 24px; box-shadow: 0 12px 26px rgba(43,27,14,.18); clip-path: polygon(0 0,100% 0,100% 96%,95% 100%,90% 96%,85% 100%,80% 96%,75% 100%,70% 96%,65% 100%,60% 96%,55% 100%,50% 96%,45% 100%,40% 96%,35% 100%,30% 96%,25% 100%,20% 96%,15% 100%,10% 96%,5% 100%,0 96%); }
-.scr-receipt-label { font-size: 16px; color: var(--red); text-align: center; }
-.scr-receipt-total { font-size: 42px; font-weight: 700; text-align: center; margin: 6px 0; }
-.scr-receipt-sub { font-size: 13px; text-align: center; color: var(--muted); }
+/* ===== Spending：打孔卡片索引 ===== */
+.spend-master { position: relative; max-width: 420px; margin: 10px auto 40px; background: var(--card); padding: 22px 30px 26px; text-align: center; box-shadow: 0 12px 26px rgba(43,27,14,.18); }
+.spend-master::before { content: ''; position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 22px 22px 0; border-color: transparent var(--bg) transparent transparent; }
+.spend-master-label { color: var(--red); font-size: 13px; letter-spacing: .08em; }
+.spend-master-amt { font-size: 34px; font-weight: 700; margin: 6px 0; border-bottom: 3px double var(--ink); display: inline-block; padding-bottom: 4px; }
+.spend-master-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
 
-.scr-donut-card { display: flex; align-items: center; justify-content: center; gap: 32px; max-width: 640px; margin: 0 auto 30px; padding: 22px 28px; background: var(--card); border: 2px dashed #c9ab6f; box-shadow: 0 8px 18px rgba(43,27,14,.12); flex-wrap: wrap; }
-.scr-donut-svg { width: 150px; height: 150px; flex: none; }
-.scr-donut-legend { display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
-.scr-donut-legend-row { display: flex; align-items: center; gap: 8px; }
-.scr-donut-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
-
-.scr-budget-rows { display: flex; flex-direction: column; gap: 18px; max-width: 640px; margin: 0 auto; }
-.scr-budget-row { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 14px; width: 100%; cursor: pointer; }
-.scr-budget-icon { width: 34px; height: 34px; flex: none; }
-.scr-budget-body { flex: 1; min-width: 0; }
-.scr-budget-top { display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-.scr-budget-tape { height: 20px; border-radius: 2px; opacity: .85; min-width: 6px; }
-.scr-budget-chevron { flex: none; font-size: 20px; color: var(--muted); transition: transform .2s ease; }
-.scr-budget-chevron.open { transform: rotate(90deg); }
-.scr-budget-detail { max-width: 640px; margin: 10px auto 0; padding-left: 16px; border-left: 2px dashed var(--gold); display: flex; flex-direction: column; gap: 10px; }
-.scr-budget-detail-row { display: flex; justify-content: space-between; gap: 12px; font-family: -apple-system, sans-serif; font-size: 12px; }
-.scr-budget-detail-title { font-weight: 700; }
-.scr-budget-detail-note { color: var(--muted); font-size: 11px; margin-top: 2px; }
-.scr-budget-detail-amount { color: var(--red); flex: none; white-space: nowrap; }
+.spend-stack { display: flex; flex-direction: column; align-items: center; padding-bottom: 10px; }
+.spend-card { all: unset; box-sizing: border-box; display: block; width: 92%; max-width: 640px; background: var(--card); padding: 16px 20px 16px 30px; box-shadow: 0 8px 18px rgba(43,27,14,.16); position: relative; margin-top: 18px; transform: rotate(var(--r, 0deg)); cursor: pointer; text-align: left; }
+.spend-card:first-child { margin-top: 28px; }
+.spend-card.open { transform: rotate(0deg); z-index: 5; box-shadow: 0 14px 30px rgba(43,27,14,.2); }
+.spend-tab { position: absolute; top: -14px; left: 24px; width: 64px; height: 20px; border-radius: 3px 3px 0 0; opacity: .92; }
+.spend-hole { position: absolute; top: 16px; left: 10px; width: 10px; height: 10px; border-radius: 50%; background: var(--bg); box-shadow: inset 0 0 0 1.5px rgba(43,27,14,.3); }
+.spend-row { display: flex; justify-content: space-between; align-items: baseline; }
+.spend-row b { font-size: 15px; }
+.spend-amt { font-size: 16px; font-weight: 700; }
+.spend-sub { font-size: 11px; color: var(--muted); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+.spend-chevron { font-size: 14px; transition: transform .2s ease; }
+.spend-chevron.open { transform: rotate(90deg); }
+.spend-detail { margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(43,27,14,.22); display: flex; flex-direction: column; gap: 10px; }
+.spend-detail-row { display: flex; justify-content: space-between; gap: 12px; font-family: -apple-system, sans-serif; font-size: 12px; }
+.spend-detail-title { font-weight: 700; }
+.spend-detail-note { color: var(--muted); font-size: 11px; margin-top: 2px; }
+.spend-detail-amount { color: var(--red); flex: none; white-space: nowrap; }
 @media (hover: hover) and (pointer: fine) {
-  .scr-budget-row:hover .scr-budget-top { color: var(--red); }
+  .spend-card:hover .spend-row b { color: var(--red); }
 }
 
 /* ===== Guide ===== */
@@ -260,14 +259,12 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
   .tl-film-title, .tl-film-route, .tl-film-date { white-space: normal; }
 
   .scr-trip-picker { font-size: 21px; }
-  .scr-donut-card { padding: 18px 20px; gap: 20px; }
-  .scr-donut-svg { width: 120px; height: 120px; }
   .scr-journal-surface { padding: 22px 20px 24px; }
   .scr-journal-title { font-size: 21px; }
   .scr-timeline-card { padding: 22px 20px 8px; }
 
-  .scr-budget-rows { gap: 20px; }
-  .scr-budget-detail { padding-left: 12px; }
+  .spend-master { padding: 20px 22px 22px; }
+  .spend-card { width: 96%; padding: 14px 16px 14px 26px; }
 
   .scr-guide-grid { grid-template-columns: 1fr; gap: 24px; }
 }
