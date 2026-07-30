@@ -39,11 +39,13 @@ python3 -m http.server 8000
 
 | 字体 | 字体族 | 用在哪些地方 |
 | --- | --- | --- |
-| **正文衬线** | `Georgia, "Songti SC", serif`（系统自带，无需加载） | 页面默认字体：行程标题、旅程卡片标题、住宿名称、攻略卡片标题、花销分类名称、弹窗正文等大部分中文正文 |
+| **正文衬线** | `Tinos Sub, "Times New Roman", Times, "Songti SC", serif`（`Tinos Sub` 自托管，`assets/fonts/tinos-subset-*.woff2`，只打包基础拉丁字母+数字+常见重音字符，两个字重共约 20KB） | 页面默认字体：行程标题、旅程卡片标题、住宿名称、攻略卡片标题、花销分类名称、弹窗正文等大部分中文正文 |
 | **手写体** | `Zhi Mang Xing Sub`（自托管，`assets/fonts/zhi-mang-xing-subset.woff2`，只打包了实际用到的约 30 个汉字+字母，12KB） | 站点 Logo「wanderlazy」、宝丽来照片说明文字、旅程卡片上的「即将出发／已收进相册」标签、弹窗标题（「足迹」「切换旅程」） |
-| **数字（工整对齐）** | `-apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif` + `font-variant-numeric: lining-nums tabular-nums`，统一用 `.num` class | 所有需要看清楚、对齐整齐的数字：足迹统计卡片数字、日期轨道的天数、年份标题、花销总额与每一笔明细金额、行程天数 |
+| **数字（工整对齐）** | `-apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif` + `font-variant-numeric: lining-nums tabular-nums`，统一用 `.num` class | 需要跟同类数字对齐成表格观感的场合：日期轨道的天数、花销总额与每一笔明细金额、行程天数 |
 | **无衬线小字** | `-apple-system, sans-serif`（不强制 tabular-nums，纯文本标签用） | 行程标签（国际航班等）、时间轴备注文字、住宿地址、花销明细备注、攻略详情文字 |
 
-**为什么数字单独拎出来**：Georgia 默认是"老式数字"（oldstyle figures），每个数字高矮不一，几个数字挨在一起会显得很乱。所以专门做了 `.num` 这个 class，统一换成无衬线 + 表格数字（等宽对齐），凡是纯数字或"数字+少量文字"的地方都应该套用它，不要漏套（之前日期轨道和年份标题就因为 CSS 优先级问题漏掉过，已修复）。
+**为什么正文衬线从 Georgia 换成了 Tinos**：Georgia 默认是"老式数字"（oldstyle figures），每个数字高矮不一，混排在句子里的数字（比如行程摘要里的"11:20 起飞"）会显得很乱，之前用 `.num` class 单独修正过，但这个办法要求每处正文里出现数字的地方都记得手动套一遍，容易漏（也确实漏过很多次）。后来换成 Tinos（Google 出的 Times New Roman 开源等宽替代字体），数字本身就是横平竖直对齐的，不再需要给正文里的数字单独处理。`.num` 保留下来，但用途收窄成"需要多个数字上下对齐成表格感"的场合（日期轨道、金额列表），不再是"修正 Georgia 数字缺陷"的补丁。
+
+**为什么正文衬线也要自托管**：只自托管 Tinos 是因为 Times New Roman 在 iOS/macOS/Windows 都是系统自带字体，但安卓大概率没有这个名字的字体文件，会掉回系统默认衬线体，字形跟其它平台不一致。Tinos 是 Times New Roman 的开源等宽替代字体（字符宽度和字形比例几乎一致），自己打包后可以保证所有平台看到的是同一款字体。只打包了拉丁字母、数字和常见重音字符（不含中文），因为中文部分不管用不用 Tinos，各平台原本就会各自 fallback 到系统中文衬线体（Mac 是 Songti SC，Windows 是 SimSun 类），这一层差异是本来就存在的，跟这次改动无关，不需要也没必要用自托管字体去覆盖全部中文字符集（体积会大很多，而且以后每次新增行程内容里出现的生僻字都要重新生成字体子集，不现实）。
 
 **手写体为什么要自托管**：一开始用的是"如果系统装了 Segoe Print / Bradley Hand 就用"的写法，但大部分手机（尤其安卓）根本没装这些字体，会直接掉回普通字体，等于没生效。改成从 Google Fonts 下载字体文件、只保留实际用到的字，直接打包进 `assets/fonts/`，任何设备都能正常显示，也不依赖 Google 的服务器。以后如果要新增手写体文案，记得同步扩充字体子集里的字符，否则新字会显示不出来（自动 fallback 回衬线体，不会报错，但也不会是手写体效果）。
