@@ -140,7 +140,7 @@
       <div class="scr-timeline-row">
         <div class="scr-timeline-time num">${item.time}</div>
         <div class="scr-timeline-track"><div class="scr-timeline-dot"></div><div class="scr-timeline-line"></div></div>
-        <div class="scr-timeline-body"><div class="scr-timeline-title">${esc(item.title)}</div><div class="scr-timeline-note">${esc(item.note)}</div></div>
+        <div class="scr-timeline-body"><div class="scr-timeline-title">${esc(item.title)}</div><div class="scr-timeline-note">${esc(item.note).replace(/\n/g, '<br />')}</div></div>
       </div>
     `).join('');
 
@@ -168,7 +168,7 @@
           <div class="scr-card-label">✦ 今日安排</div>
           ${timelineHtml}
         </div>
-        <div class="scr-sticky">☀ ${esc(day.reminder)}</div>
+        <div class="scr-sticky">☀ ${esc(day.reminder).replace(/\n/g, '<br />')}</div>
       </div>
     `;
   }
