@@ -186,6 +186,89 @@ const guidesByTrip = {
   [graduationTrip.id]: graduationGuides
 };
 
+// 随行页只维护核对事项；酒店地址、日期和交通日摘要始终取自行程。
+const companionByTrip = {
+  [trip.id]: {
+    checklistOnly: true,
+    groups: [
+      { id: "documents", name: "证件资料", en: "DOCUMENTS", note: "证件 · 纸质备份" },
+      { id: "electronics", name: "电子产品", en: "ELECTRONICS", note: "充电 · 通讯 · 电器" },
+      { id: "daily", name: "日用品", en: "DAILY ESSENTIALS", note: "洗护 · 护肤 · 彩妆" },
+      { id: "medicine", name: "药品", en: "MEDICINE", note: "随身药品" },
+      { id: "clothes", name: "衣服", en: "CLOTHING", note: "鞋履 · 外套" }
+    ],
+    checks: {
+      documents: [
+        { id: "documents-1", title: "护照" },
+        { id: "documents-2", title: "身份证" },
+        { id: "documents-3", title: "港澳通行证" },
+        { id: "documents-4", title: "签证（电子版、纸质版）" },
+        { id: "documents-5", title: "驾照及国际翻译件" },
+        { id: "documents-6", title: "机酒、行程单的纸质版" }
+      ],
+      electronics: [
+        { id: "electronics-1", title: "充电器" },
+        { id: "electronics-2", title: "充电宝" },
+        { id: "electronics-3", title: "转换头" },
+        { id: "electronics-4", title: "电话卡" },
+        { id: "electronics-5", title: "笔记本" },
+        { id: "electronics-6", title: "吹风机" }
+      ],
+      daily: [
+        { id: "daily-1", title: "洗发水、护发素（澳洲落地买）" },
+        { id: "daily-2", title: "牙刷、牙膏" },
+        { id: "daily-3", title: "洗脸巾" },
+        { id: "daily-4", title: "一次性浴巾、内裤、袜子" },
+        { id: "daily-5", title: "卸妆油/膏" },
+        { id: "daily-6", title: "洗面奶" },
+        { id: "daily-7", title: "水、精华、面霜" },
+        { id: "daily-8", title: "防晒" },
+        { id: "daily-9", title: "气垫/粉底液" },
+        { id: "daily-10", title: "彩妆" },
+        { id: "daily-11", title: "定妆" },
+        { id: "daily-12", title: "面膜" },
+        { id: "daily-13", title: "身体乳" }
+      ],
+      medicine: [
+        { id: "medicine-1", title: "晕车晕船药" },
+        { id: "medicine-2", title: "感冒药" },
+        { id: "medicine-3", title: "止泻药" },
+        { id: "medicine-4", title: "过敏药" },
+        { id: "medicine-5", title: "消食片" },
+        { id: "medicine-6", title: "避孕药" },
+        { id: "medicine-7", title: "驱虫药" }
+      ],
+      clothes: [
+        { id: "clothes-1", title: "运动鞋" },
+        { id: "clothes-2", title: "洞洞鞋" },
+        { id: "clothes-3", title: "冲锋衣（带内胆）" }
+      ]
+    }
+  },
+  [graduationTrip.id]: {
+    transportDays: [0, 3, 7],
+    checks: {
+      stay: [{ id: 'hotel', title: '收好酒店地址与订单', note: '西安、张掖与山顶民宿，按入住日期来找。' }],
+      transport: [
+        { id: 'tickets', title: '核对机票、高铁与中转', note: '确认航站楼、出发车站和到站后的接驳。' },
+        { id: 'car', title: '确认自驾与包车安排', note: '取还车时间、集合地点和当天接送约定。' }
+      ],
+      documents: [{ id: 'docs', title: '备好证件与预订副本', note: '身份证、交通票务、酒店与景区预约信息。' }],
+      packing: [{ id: 'bag', title: '装好徒步与保暖用品', note: '防滑鞋、防晒、补水用品与雪山保暖层。' }]
+    },
+    documents: [
+      { title: '随身证件', note: '身份证和交通票务信息，出门前一起核对。' },
+      { title: '入住与预约', note: '酒店订单、景区门票和预约信息，提前存好电子版。' },
+      { title: '交通约定', note: '租车、华山包车与雪山接送，收好预订记录。' }
+    ],
+    packing: [
+      { title: '城市与徒步', note: '舒适防滑鞋、防晒、墨镜、帽子与饮水。' },
+      { title: '峡谷与雪山', note: '冲锋衣、保暖层、常用药和随身零食。' },
+      { title: '山顶过夜', note: '睡前备好保暖衣物，第二天出门带上补给。' }
+    ]
+  }
+};
+
 const footprintStats = [
   { id: 'countries', icon: 'assets/icons/globe.svg', value: '2', label: '国家/地区', interactive: true, detail: '澳大利亚\n中国' },
   { id: 'cities', icon: 'assets/icons/building.svg', value: '6', label: '座城市', interactive: true, detail: '墨尔本、凯恩斯、悉尼\n西安、张掖、兰州' },

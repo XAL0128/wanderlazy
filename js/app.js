@@ -1,14 +1,95 @@
 (function () {
+  const requestedTab = new URLSearchParams(location.search).get('tab');
   const state = {
-    activeTab: 'footprints',
+    activeTab: ['footprints', 'itinerary', 'spending', 'guide'].includes(requestedTab) ? requestedTab : 'footprints',
     tripIndex: 0,
     dayIndex: 0,
     activeExpenseId: '',
-    activeGuideId: ''
+    openFolders: {},
+    selectedStay: {}
   };
 
   const root = document.getElementById('app');
   let dayStep = null;
+  const companionChecks = new Map();
+  const COMPANION_GROUPS = [
+    { id: 'stay', name: '住在哪里', en: 'STAY', note: '酒店地址 · 入住备忘' },
+    { id: 'transport', name: '怎么出发', en: 'ON THE WAY', note: '航班接驳 · 自驾约定' },
+    { id: 'documents', name: '重要资料', en: 'DOCUMENTS', note: '随身证件 · 预订副本' },
+    { id: 'packing', name: '带在身边', en: 'LITTLE THINGS', note: '行囊准备 · 每日随身' }
+  ];
+
+  function checksFor(tripId) {
+    if (!companionChecks.has(tripId)) {
+      let saved = [];
+      try {
+        const value = JSON.parse(localStorage.getItem(`wanderlazy-companion:${tripId}`) || '[]');
+        if (Array.isArray(value)) saved = value.filter((id) => typeof id === 'string');
+      } catch (_) { /* 浏览器禁用存储时，清单仍可在本次访问中使用。 */ }
+      companionChecks.set(tripId, new Set(saved));
+    }
+    return companionChecks.get(tripId);
+  }
+
+  function hasHotelAddress(day) {
+    return Boolean(day.hotel && day.hotel !== '—' && day.hotelAddress && !/待定|待补充|旅程结束/.test(day.hotelAddress));
+  }
+
+  // 所有复制入口共用一条反馈，重复点击只延长显示时间。
+  let toast;
+  let toastTimer;
+  let toastClearTimer;
+  function showToast(message) {
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.className = 'scr-copy-toast';
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+      toast.setAttribute('aria-atomic', 'true');
+      document.body.appendChild(toast);
+    }
+    clearTimeout(toastTimer);
+    clearTimeout(toastClearTimer);
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('is-visible');
+      toastClearTimer = setTimeout(() => { toast.textContent = ''; }, 500);
+    }, 1500);
+  }
+
+  function copyWithSelection(address) {
+    const active = document.activeElement;
+    const field = document.createElement('textarea');
+    field.value = address;
+    field.readOnly = true;
+    field.className = 'scr-copy-field';
+    document.body.appendChild(field);
+    field.select();
+    field.setSelectionRange(0, address.length);
+    let copied = false;
+    try { copied = document.execCommand('copy'); }
+    catch (_) { copied = false; }
+    finally {
+      field.remove();
+      if (active && active.isConnected) active.focus({ preventScroll: true });
+    }
+    return copied;
+  }
+
+  async function copyHotelAddress(dayIndex) {
+    const day = currentTrip().days[dayIndex];
+    if (!day || !hasHotelAddress(day)) return;
+    let copied = false;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(day.hotelAddress);
+        copied = true;
+      }
+    } catch (_) { /* 在不支持 Clipboard API 的浏览器中尝试选区复制。 */ }
+    if (!copied) copied = copyWithSelection(day.hotelAddress);
+    showToast(copied ? '✓ 地址已复制' : '未能复制，请长按地址手动复制');
+  }
 
   function currentTrip() {
     return trips[state.tripIndex];
@@ -34,7 +115,7 @@
       { id: 'footprints', label: '足迹' },
       { id: 'itinerary', label: '行程' },
       { id: 'spending', label: '花销' },
-      { id: 'guide', label: '攻略' }
+      { id: 'guide', label: '随行' }
     ];
     return `
       <div class="scr-nav">
@@ -145,7 +226,10 @@
     `).join('');
 
     const hasHotel = day.hotel !== '—';
-    const hotelHtml = hasHotel ? `<div class="scr-hotel"><b>住宿 · ${esc(day.hotel)}</b><span><img class="scr-pin-icon" src="${PIN_ICON}" alt="" />${esc(day.hotelAddress)}</span></div>` : '';
+    const hotelContent = `<b>住宿 · ${esc(day.hotel)}</b><span><img class="scr-pin-icon" src="${PIN_ICON}" alt="" />${esc(day.hotelAddress)}</span>`;
+    const hotelHtml = !hasHotel ? '' : hasHotelAddress(day)
+      ? `<button type="button" class="scr-hotel scr-hotel-copy" data-action="copy-hotel" data-index="${day.index}" title="点击复制酒店地址" aria-label="复制 ${esc(day.hotel)} 的地址：${esc(day.hotelAddress)}">${hotelContent}</button>`
+      : `<div class="scr-hotel">${hotelContent}</div>`;
 
     return `
       <div class="scr-page">
@@ -217,31 +301,104 @@
 
   function renderGuide() {
     const trip = currentTrip();
-    const guides = guidesByTrip[trip.id];
-    const rotations = ['-2deg', '1.5deg', '-1deg'];
-    const cardsHtml = guides.map((item, index) => `
-      <button type="button" class="scr-guide-card" style="--r:${rotations[index % rotations.length]}" data-action="toggle-guide" data-id="${item.id}" aria-expanded="${state.activeGuideId === item.id ? 'true' : 'false'}">
-        <div class="scr-guide-pin"></div>
-        <img class="scr-guide-icon" src="${item.icon}" alt="" />
-        <div class="scr-guide-title">${esc(item.title)}</div>
-        <div class="scr-guide-sub">${esc(item.subtitle.replace(/\n/g, ' '))}</div>
-        ${state.activeGuideId === item.id ? `
-          <div class="scr-guide-details">
-            ${item.details.map((detail) => `<div class="scr-guide-detail-row"><span>✦</span><span>${esc(detail)}</span></div>`).join('')}
-          </div>
-        ` : ''}
-      </button>
-    `).join('');
-
+    const content = companionByTrip[trip.id];
+    const checked = checksFor(trip.id);
+    const tasks = Object.values(content.checks).flat();
+    const completed = tasks.filter((task) => checked.has(task.id)).length;
+    const openFolders = state.openFolders[trip.id] || (state.openFolders[trip.id] = new Set([(content.groups || COMPANION_GROUPS)[0].id]));
+    const cardsHtml = (content.groups || COMPANION_GROUPS).map((group, index) => {
+      const items = content.checks[group.id];
+      const count = items.filter((task) => checked.has(task.id)).length;
+      return `<details class="comp-folder comp-${group.id}" data-folder="${group.id}" data-trip="${trip.id}" ${openFolders.has(group.id) ? 'open' : ''}>
+        <summary>
+          <span class="comp-folder-number num-hand">${String(index + 1).padStart(2, '0')}</span>
+          <span class="comp-folder-title"><strong>${group.name}</strong><small>${group.en}</small></span>
+          <span class="comp-folder-note">${group.note}</span>
+          <span class="comp-folder-count" data-group-count="${group.id}">${count} / ${items.length} 已核对</span>
+          <span class="comp-folder-toggle" aria-hidden="true"></span>
+        </summary>
+        ${content.checklistOnly ? `<div class="comp-folder-body comp-list-body">
+          ${items.map((task) => `<label class="comp-check"><input type="checkbox" data-comp-check="${task.id}" ${checked.has(task.id) ? 'checked' : ''}><span><b>${esc(task.title)}</b></span></label>`).join('')}
+        </div>` : `        <div class="comp-folder-body">
+          <section class="comp-checks"><h2><span>出发前</span> 核对一下</h2>
+            ${items.map((task) => `<label class="comp-check"><input type="checkbox" data-comp-check="${task.id}" ${checked.has(task.id) ? 'checked' : ''}><span><b>${esc(task.title)}</b><small>${esc(task.note)}</small></span></label>`).join('')}
+          </section>
+          <section class="comp-reference"><h2><span>在路上</span> 随手翻看</h2>${renderCompanionReference(group.id)}</section>
+        </div>`}
+      </details>`;
+    }).join('');
     return `
-      <div class="scr-page">
+      <div class="scr-page comp-page">
         <div class="scr-itin-head">
           <button type="button" class="scr-trip-picker" data-action="open-trip-picker">${esc(trip.title)} <span>▾</span></button>
+          <div class="scr-itin-duration num">${trip.startDate} — ${trip.endDate} · ${trip.duration}</div>
         </div>
-        <div class="scr-section-title">✦ 攻略</div>
-        <div class="scr-guide-grid">${cardsHtml}</div>
+        <div class="comp-intro">
+          <div><span class="comp-eyebrow">A LITTLE READY, A LITTLE FREE</span><h1>出发前收好，一路上随行。</h1><p>把准备勾在这里，把常用的留在手边。</p></div>
+          <div class="comp-progress"><span><b class="num-hand" data-comp-total>${completed}</b><span> / ${tasks.length} 已核对</span></span><div role="progressbar" aria-label="行前核对进度" aria-valuemin="0" aria-valuemax="${tasks.length}" aria-valuenow="${completed}"><i style="width:${completed / tasks.length * 100}%"></i></div></div>
+        </div>
+        <div class="comp-folders">${cardsHtml}</div>
+        <p class="comp-footnote">核对过的资料，也会一直留在这里。<span>进度保存在当前浏览器</span></p>
       </div>
     `;
+  }
+
+  function staysFor(trip) {
+    const stays = [];
+    trip.days.forEach((day) => {
+      if (!hasHotelAddress(day)) return;
+      const previous = stays[stays.length - 1];
+      if (previous && previous.hotel === day.hotel && previous.hotelAddress === day.hotelAddress && previous.lastIndex === day.index - 1) {
+        previous.lastDate = day.date;
+        previous.lastIndex = day.index;
+      } else stays.push({ ...day, lastDate: day.date, lastIndex: day.index });
+    });
+    return stays;
+  }
+
+  function renderStayCard() {
+    const trip = currentTrip();
+    const stays = staysFor(trip);
+    const selected = state.selectedStay[trip.id] || 0;
+    const stay = stays[selected] || stays[0];
+    if (!stay) return '<p class="comp-note">酒店地址待补充。</p>';
+    return `<button type="button" class="comp-hotel-card" data-action="copy-hotel" data-index="${stay.index}" title="点击复制酒店地址" aria-label="复制 ${esc(stay.hotel)} 的地址：${esc(stay.hotelAddress)}">
+      <span class="comp-hotel-date num">${stay.date}${stay.lastDate !== stay.date ? ` — ${stay.lastDate}` : ''} · 入住</span>
+      <b>${esc(stay.hotel)}</b><span class="comp-hotel-address"><img src="${PIN_ICON}" class="scr-pin-icon" alt="">${esc(stay.hotelAddress)}</span>
+    </button>`;
+  }
+
+  function renderCompanionReference(group) {
+    const trip = currentTrip();
+    const content = companionByTrip[trip.id];
+    if (group === 'stay') {
+      const stays = staysFor(trip);
+      const pending = trip.days.filter((day) => day.hotel !== '—' && !hasHotelAddress(day));
+      return `<div class="comp-city-tabs" role="group" aria-label="选择住宿">${stays.map((stay, index) => `<button type="button" data-action="select-stay" data-index="${index}" aria-pressed="${index === (state.selectedStay[trip.id] || 0)}">${esc(stay.dateCity)}${stays.filter((item) => item.dateCity === stay.dateCity).length > 1 ? ` · ${stay.date}` : ''}</button>`).join('')}</div>
+        <div id="comp-stay-card">${renderStayCard()}</div>
+        <p class="comp-copy-hint">点击酒店卡片，即可复制地址。</p>
+        ${pending.length ? `<p class="comp-pending"><b>待落实</b>${pending.map((day) => `${day.date} ${esc(day.hotelAddress.replace(/^待定\s*·\s*/, ''))}`).join(' / ')}</p>` : ''}`;
+    }
+    if (group === 'transport') return `<div class="comp-travel-days">${content.transportDays.map((index) => {
+      const day = trip.days[index];
+      return `<button type="button" class="comp-travel-day" data-action="open-day" data-index="${index}"><span class="num">${day.date}</span><span><b>${esc(day.title)}</b><small>${esc(day.summary)}</small></span><span aria-hidden="true">↗</span></button>`;
+    }).join('')}</div><p class="comp-note">${esc(guidesByTrip[trip.id].find((guide) => guide.id === 'transport').details[1])}</p>`;
+    return `<div class="comp-notes">${content[group].map((item) => `<div><b>${esc(item.title)}</b><p>${esc(item.note)}</p></div>`).join('')}</div>`;
+  }
+
+  function updateCompanionProgress() {
+    const content = companionByTrip[currentTrip().id];
+    const checked = checksFor(currentTrip().id);
+    const tasks = Object.values(content.checks).flat();
+    const completed = tasks.filter((task) => checked.has(task.id)).length;
+    root.querySelector('[data-comp-total]').textContent = completed;
+    const progress = root.querySelector('.comp-progress [role="progressbar"]');
+    progress.setAttribute('aria-valuenow', completed);
+    progress.querySelector('i').style.width = `${completed / tasks.length * 100}%`;
+    (content.groups || COMPANION_GROUPS).forEach((group) => {
+      const items = content.checks[group.id];
+      root.querySelector(`[data-group-count="${group.id}"]`).textContent = `${items.filter((task) => checked.has(task.id)).length} / ${items.length} 已核对`;
+    });
   }
 
   function render() {
@@ -274,7 +431,6 @@
     state.tripIndex = index;
     state.dayIndex = 0;
     state.activeExpenseId = '';
-    state.activeGuideId = '';
   }
 
   function moveDay(direction) {
@@ -367,11 +523,37 @@
     else if (action === 'date-prev') moveDay(-1);
     else if (action === 'date-next') moveDay(1);
     else if (action === 'toggle-expense') { const id = target.dataset.id; state.activeExpenseId = state.activeExpenseId === id ? '' : id; render(); }
-    else if (action === 'toggle-guide') { const id = target.dataset.id; state.activeGuideId = state.activeGuideId === id ? '' : id; render(); }
+    else if (action === 'copy-hotel') copyHotelAddress(Number(target.dataset.index));
+    else if (action === 'select-stay') {
+      state.selectedStay[currentTrip().id] = Number(target.dataset.index);
+      root.querySelectorAll('[data-action="select-stay"]').forEach((button) => button.setAttribute('aria-pressed', button === target));
+      root.querySelector('#comp-stay-card').innerHTML = renderStayCard();
+    }
+    else if (action === 'open-day') { state.dayIndex = Number(target.dataset.index); state.activeTab = 'itinerary'; render(); window.scrollTo({ top: 0 }); }
     else if (action === 'show-stat') showStatModal(target.dataset.statId);
     else if (action === 'open-trip-picker') openTripPicker();
     else if (action === 'open-photo') openPhotoLightbox(target.dataset.src, target.dataset.alt);
   });
+
+  root.addEventListener('change', (e) => {
+    const input = e.target.closest('[data-comp-check]');
+    if (!input) return;
+    const tripId = currentTrip().id;
+    const checked = checksFor(tripId);
+    if (input.checked) checked.add(input.dataset.compCheck);
+    else checked.delete(input.dataset.compCheck);
+    updateCompanionProgress();
+    try { localStorage.setItem(`wanderlazy-companion:${tripId}`, JSON.stringify([...checked])); }
+    catch (_) { showToast('已更新，本次浏览无法保存进度'); }
+  });
+
+  root.addEventListener('toggle', (e) => {
+    const folder = e.target;
+    if (!folder.matches('.comp-folder') || !root.contains(folder)) return;
+    const open = state.openFolders[folder.dataset.trip];
+    if (folder.open) open.add(folder.dataset.folder);
+    else open.delete(folder.dataset.folder);
+  }, true);
 
   render();
 })();

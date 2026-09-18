@@ -179,7 +179,128 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .scr-hotel { background: var(--card); padding: 20px 24px; box-shadow: 0 8px 18px rgba(43,27,14,.14); margin-bottom: 22px; }
 .scr-hotel b { display: block; font-size: 16px; margin-bottom: 6px; }
 .scr-hotel span { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.scr-hotel-copy { display: block; width: 100%; border: 0; color: var(--ink); text-align: left; cursor: pointer; transition: background .18s ease; }
+.scr-hotel-copy:focus-visible { outline: 2px solid var(--forest); outline-offset: -8px; }
+.scr-hotel-copy b, .scr-hotel-copy span { overflow-wrap: anywhere; }
 .scr-pin-icon { width: 13px; height: 13px; flex: none; opacity: .8; }
+@media (hover: hover) and (pointer: fine) {
+  .scr-hotel-copy:hover { background: #fff9ed; }
+  .scr-hotel-copy:hover b { color: var(--forest); }
+}
+
+.scr-copy-toast { position: fixed; left: 50%; bottom: max(34px, env(safe-area-inset-bottom)); z-index: 150; transform: translate(-50%, 6px); padding: 12px 22px; max-width: calc(100vw - 36px); width: max-content; border: 1px solid rgba(251,243,225,.2); border-radius: 5px; background: #37533df5; color: #fff9ed; box-shadow: 0 8px 28px #2b1b0e26; font-size: 14px; line-height: 1.5; text-align: center; pointer-events: none; opacity: 0; transition: opacity .45s ease, transform .3s ease; }
+.scr-copy-toast.is-visible { opacity: 1; transform: translate(-50%, 0); transition-duration: .16s; }
+.scr-copy-field { position: fixed; left: 0; top: 0; opacity: 0; width: 1px; height: 1px; padding: 0; border: 0; font-size: 16px; }
+
+/* ===== 随行：可以一路翻看的折叠档案 ===== */
+.comp-page { max-width: 1060px; margin: 0 auto; }
+.comp-page .scr-itin-head { margin-bottom: 30px; }
+.comp-intro { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin: 0 0 35px; padding: 0 4px; }
+.comp-eyebrow { font-size: 10px; letter-spacing: .16em; color: var(--muted); }
+.comp-intro h1 { margin: 7px 0 8px; font-size: 27px; font-weight: 700; text-align: center; }
+.comp-intro p { color: var(--muted); font-size: 13px; margin: 0; }
+.comp-progress { flex: 0 0 180px; color: var(--muted); font-size: 12px; }
+.comp-progress > span { display: block; text-align: right; margin-bottom: 8px; }
+.comp-progress b { font-size: 28px; color: var(--forest); margin-right: 3px; }
+.comp-progress [role="progressbar"] { height: 4px; background: #cbbb96; }
+.comp-progress i { height: 100%; display: block; background: var(--forest); transition: width .2s ease; }
+.comp-folders { display: grid; gap: 24px; }
+.comp-folder { --folder-color: #47684f; --folder-paper: #fbf3e1; position: relative; background: var(--folder-paper); border-left: 3px solid var(--folder-color); box-shadow: 0 7px 16px #2b1b0e0e; }
+.comp-folder::before { content: ''; position: absolute; top: -8px; left: -3px; width: 86px; height: 9px; background: var(--folder-color); border-radius: 4px 8px 0 0; }
+.comp-transport { --folder-color: #a9822f; --folder-paper: #f8eed7; }
+.comp-documents { --folder-color: #8a7051; --folder-paper: #faf1e2; }
+.comp-packing { --folder-color: #3e7a6b; --folder-paper: #f4efdf; }
+.comp-electronics { --folder-color: #a9822f; --folder-paper: #f8eed7; }
+.comp-daily { --folder-color: #3e7a6b; --folder-paper: #f4efdf; }
+.comp-medicine { --folder-color: #9a6050; --folder-paper: #faf0e2; }
+.comp-clothes { --folder-color: #47684f; --folder-paper: #f5efdd; }
+.comp-folder summary { display: grid; grid-template-columns: 42px 150px 1fr auto 20px; gap: 18px; align-items: center; padding: 21px 26px; cursor: pointer; list-style: none; min-height: 85px; }
+.comp-folder summary::-webkit-details-marker { display: none; }
+.comp-folder summary:focus-visible { outline: 2px solid var(--forest); outline-offset: -5px; }
+.comp-folder-number { color: var(--folder-color); font-size: 28px; }
+.comp-folder-title { text-align: center; }
+.comp-folder-title strong { display: block; font-size: 19px; font-weight: 700; }
+.comp-folder-title small { display: block; color: var(--folder-color); font-size: 9px; letter-spacing: .13em; margin-top: 5px; }
+.comp-folder-note { color: var(--muted); font-size: 12px; text-align: center; }
+.comp-folder-count { font-size: 11px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.comp-folder-toggle { width: 18px; height: 18px; position: relative; }
+.comp-folder-toggle::before, .comp-folder-toggle::after { content: ''; position: absolute; width: 11px; height: 1px; background: var(--folder-color); left: 4px; top: 8px; }
+.comp-folder-toggle::after { transform: rotate(90deg); transition: transform .2s; }
+.comp-folder[open] .comp-folder-toggle::after { transform: rotate(0); }
+.comp-folder[open] summary { border-bottom: 1px dashed #a9822f50; }
+.comp-folder-body { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); padding: 24px 30px 25px; gap: 32px; }
+.comp-folder-body h2 { font-size: 11px; font-weight: 400; margin: 0 0 17px; text-align: left; color: var(--muted); }
+.comp-folder-body h2 > span { border: 1px solid #a9822f55; padding: 3px 7px; color: var(--folder-color); margin-right: 5px; }
+.comp-reference { border-left: 1px solid #a9822f35; padding-left: 30px; min-width: 0; }
+.comp-check { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; padding: 11px 0; }
+.comp-check + .comp-check { border-top: 1px dashed #a9822f30; margin-top: 5px; }
+.comp-check input { appearance: none; -webkit-appearance: none; flex: 0 0 17px; height: 17px; border: 1px solid #8a7958; border-radius: 2px; margin: 2px 0 0; background: transparent; display: grid; place-content: center; cursor: pointer; }
+.comp-check input:checked { background: var(--forest); border-color: var(--forest); }
+.comp-check input:checked::after { content: '✓'; color: #fff9ed; font: 12px/1 sans-serif; }
+.comp-check input:focus-visible { outline: 2px solid var(--forest); outline-offset: 3px; }
+.comp-check b { display: block; font-size: 14px; font-weight: 400; line-height: 1.5; }
+.comp-check small { display: block; font-size: 11px; color: var(--muted); line-height: 1.75; margin-top: 5px; }
+.comp-check input:checked + span b { color: var(--forest); }
+.comp-list-body { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.comp-list-body .comp-check { min-height: 48px; align-items: center; border-top: 0; border-bottom: 1px dashed #a9822f30; margin: 0; }
+.comp-list-body .comp-check input { margin-top: 0; }
+.comp-city-tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.comp-city-tabs button { border: 0; background: transparent; color: var(--muted); font-size: 11px; padding: 6px 9px; cursor: pointer; border-radius: 2px; }
+.comp-city-tabs button[aria-pressed="true"] { background: var(--folder-color); color: #fff9ed; }
+.comp-hotel-card { display: block; width: 100%; padding: 14px 17px; border: 1px solid #a9822f45; border-left: 2px solid var(--folder-color); text-align: left; background: #fffaf0; color: var(--ink); cursor: pointer; }
+.comp-hotel-date { display: block; font-size: 10px; color: var(--muted); margin-bottom: 8px; }
+.comp-hotel-card b { display: block; font-size: 17px; line-height: 1.3; font-weight: 700; overflow-wrap: anywhere; }
+.comp-hotel-address { display: flex; gap: 6px; align-items: flex-start; font-size: 12px; line-height: 1.6; color: var(--muted); margin-top: 8px; overflow-wrap: anywhere; }
+.comp-hotel-address img { margin-top: 3px; }
+.comp-copy-hint { margin: 7px 0 0; color: var(--muted); font-size: 10px; }
+.comp-pending { margin: 13px 0 0; font-size: 11px; line-height: 1.7; color: var(--muted); }
+.comp-pending b { color: #974438; font-weight: 400; padding-right: 8px; }
+.comp-notes { display: grid; gap: 14px; }
+.comp-notes b { font-size: 14px; font-weight: 400; }
+.comp-notes p, .comp-note { font-size: 12px; color: var(--muted); line-height: 1.8; margin: 5px 0 0; }
+.comp-note { margin-top: 16px; }
+.comp-travel-day { width: 100%; display: grid; grid-template-columns: 35px 1fr 12px; gap: 12px; align-items: start; padding: 12px 0; border: 0; border-bottom: 1px dashed #a9822f45; background: transparent; color: var(--ink); text-align: left; cursor: pointer; }
+.comp-travel-day:first-child { padding-top: 0; }
+.comp-travel-day > span:first-child { color: var(--folder-color); font-size: 12px; padding-top: 2px; }
+.comp-travel-day b { font-size: 14px; font-weight: 400; }
+.comp-travel-day small { display: block; color: var(--muted); font-size: 11px; line-height: 1.8; margin-top: 5px; }
+.comp-footnote { display: flex; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 11px; line-height: 1.8; margin: 24px 0 0; }
+.comp-footnote span { font-size: 10px; }
+@media (hover: hover) and (pointer: fine) {
+  .comp-folder summary:hover { background: #fffaf050; }
+  .comp-hotel-card:hover { background: #fffdf7; border-color: var(--folder-color); }
+  .comp-travel-day:hover b { color: var(--forest); }
+}
+@media (max-width: 860px) {
+  .comp-page .scr-itin-head { margin-bottom: 25px; }
+  .comp-intro { flex-direction: column; gap: 16px; margin-bottom: 30px; text-align: center; }
+  .comp-intro h1 { font-size: 23px; }
+  .comp-intro p { font-size: 12px; }
+  .comp-eyebrow { font-size: 8px; }
+  .comp-progress { flex: auto; width: 100%; max-width: 310px; display: flex; align-items: center; gap: 15px; }
+  .comp-progress > span { margin: 0; white-space: nowrap; text-align: left; }
+  .comp-progress b { font-size: 22px; }
+  .comp-progress [role="progressbar"] { flex: 1; }
+  .comp-folder summary { grid-template-columns: 28px minmax(0, 1fr) auto 12px; gap: 10px; padding: 17px 15px; min-height: 79px; }
+  .comp-folder-title { text-align: center; }
+  .comp-folder-title strong { font-size: 17px; }
+  .comp-folder-title small { font-size: 8px; letter-spacing: .05em; }
+  .comp-folder-number { font-size: 23px; }
+  .comp-folder-note { display: none; }
+  .comp-folder-count { font-size: 10px; }
+  .comp-folder-toggle::before, .comp-folder-toggle::after { left: 0; }
+  .comp-folder-body { grid-template-columns: 1fr; padding: 18px 20px 22px; gap: 20px; }
+  .comp-list-body { gap: 0; }
+  .comp-folder-body h2 { margin-bottom: 12px; }
+  .comp-reference { border-left: 0; border-top: 1px dashed #a9822f45; padding: 20px 0 0; }
+  .comp-city-tabs button { padding: 7px 10px; }
+  .comp-hotel-card b { font-size: 16px; }
+  .comp-footnote { display: block; text-align: center; }
+  .comp-footnote span { display: block; margin-top: 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scr-copy-toast, .comp-progress i, .comp-folder-toggle::after { transition: none; }
+}
 
 .scr-timeline-card { background: var(--card); padding: 26px 32px 8px; box-shadow: 0 12px 26px rgba(43,27,14,.16); margin-bottom: 22px; }
 .scr-timeline-row { display: flex; gap: 6px; }
