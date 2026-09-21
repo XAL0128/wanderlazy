@@ -25,7 +25,32 @@ trip.duration = calculateTripDuration(trip.startDate, trip.endDate, trip.year);
 
 const days = [
   { date: '09.25', number: 1, city: '出发 / 墨尔本', shortTitle: '从香港出发，抵达南半球', title: '香港 → 墨尔本', summary: '11:20 起飞，22:15 抵达墨尔本。到酒店办理入住后直接休息，留足恢复体力的时间。', hotel: 'The Victoria Hotel', hotelAddress: '215 Little Collins Street, Melbourne VIC 3000', hotelImage: 'assets/photos/the-victoria-hotel-melbourne/interior.jpg', tags: ['国际航班', '抵达日'], reminder: 'Melbourne City Express的营业时间是从凌晨 4:00 到次日凌晨 1:00，成人单程约 $25.9 澳元，可以通过 SkyBus 官网或其他购票平台购买，也可以在机场的自助售票机购买。\n☀ 注意：自助售票机通常只支持刷卡，不支持现金', timeline: [{ time: '5:30', title: '出发', note: 'xal：广州南-香港西九龙，06:32～07:46\nlkq：深圳北-香港西九龙，07:22～07:46' }, { time: '07:46', title: '到达香港西九龙站', note: '机场快线2站22分钟，加上步行总时长预计45分钟\n• 记得坐地铁前，打开支付宝，搜“惠出境”，领9折券+红包' }, { time: '11:20', title: '香港起飞', note: '香港国际机场T1，国泰航空 CX163\n• 记得退离境税，200港币' }, { time: '22:15', title: '抵达墨尔本', note: '落地墨尔本机场T2\n• 打车：22到35分钟，约$52澳元。\n• 公共交通：Melbourne City Express（Terminal 1 -> Southern Cross: Bay 51），换乘Bundoora RMIT（Lonsdale St/Spencer St -> Swanston St/Bourke St），然后步行160米2分钟' }, { time: '深夜', title: '入住休息', note: '为次日 City Walk 恢复体力' }] },
-  { date: '09.26', number: 2, city: '墨尔本', shortTitle: 'City Walk · 巷弄与河岸', title: '墨尔本城市 City Walk', summary: '以市场、图书馆、拱廊、涂鸦巷和亚拉河为主，按体力在 NGV 与皇家植物园间二选一。', hotel: 'The Victoria Hotel', hotelAddress: '215 Little Collins Street, Melbourne VIC 3000', hotelImage: 'assets/photos/the-victoria-hotel-melbourne/interior.jpg', tags: ['城市漫步', '咖啡', '轻松'], reminder: '大洋路自驾前一天不宜走得太满，早点休息。', timeline: [{ time: '上午', title: 'Queen Victoria Market', note: '早餐、咖啡与市集闲逛' }, { time: '中午', title: 'CBD 巷弄漫步', note: '州立图书馆、拱廊、Degraves Street' }, { time: '下午', title: '河岸与美术馆', note: 'Flinders Street、联邦广场、NGV 或植物园' }] },
+  {
+    date: '09.26', number: 2, city: '墨尔本', shortTitle: 'City Walk · 巷弄与河岸', title: '墨尔本城市 City Walk',
+    summary: '从酒店出发，串联涂鸦巷、咖啡巷、复古拱廊、市场与图书馆，午后回酒店休息，傍晚再去雅拉河散步、吃晚餐。',
+    hotel: 'The Victoria Hotel', hotelAddress: '215 Little Collins Street, Melbourne VIC 3000', hotelImage: 'assets/photos/the-victoria-hotel-melbourne/interior.jpg',
+    tags: ['城市漫步', '巷弄咖啡', '河岸晚餐'],
+    reminder: '墨尔本当地时间；全程步行约 7.34 公里。步行估时据 9 月 19 日 OSM / FOSSGIS 查询，时间线已留过街与休息缓冲。开放及通行以现场为准。\n03 版路线图（点击放大）',
+    reminderImage: 'assets/maps/day2-melbourne-editorial.webp',
+    reminderImageAlt: '墨尔本 Day 2 旅行杂志版路线图：酒店、涂鸦巷、联邦广场、车站、咖啡巷、拱廊、市场、图书馆、唐人街、议会大厦及雅拉河，含时间线和逐段步行距离',
+    timeline: [
+      { time: '09:00', title: '酒店出发 · The Victoria Hotel', note: '从 Little Collins Street 正门出发，带水和舒适步行鞋。' },
+      { time: '09:10', title: '① Hosier Lane · 霍西尔涂鸦巷', note: '拍涂鸦与人物合照，逛至 09:30。\n从酒店步行 450 米，约 6 分钟。' },
+      { time: '09:35', title: '② 联邦广场 · 圣保罗教堂外观', note: '拍广场与教堂外观，逛至 09:50；中午起有 AFL 活动。\n从涂鸦巷步行 260 米，约 4 分钟。' },
+      { time: '09:55', title: '③ Flinders Street Station · 弗林德斯街车站', note: '打卡黄砖立面、钟楼，拍至 10:10，不进站台。\n从广场步行 110 米，约 2 分钟。' },
+      { time: '10:15', title: '④ Degraves 咖啡巷 · 早午餐', note: 'Degraves Espresso 早午餐、咖啡，休息至 11:05（含等位，未预订）。\n从车站步行 210 米，约 3 分钟。' },
+      { time: '11:10', title: '⑤ Block Arcade · 布洛克拱廊', note: '经 Centre Place，拍马赛克地面、玻璃顶，逛至 11:30。\n从咖啡巷步行 200 米，约 3 分钟。' },
+      { time: '11:35', title: '⑥ Royal Arcade · 皇家拱廊', note: '经 Block Place，逛复古商铺、看 Gog & Magog 钟，至 11:55。\n从布洛克拱廊步行 180 米，约 3 分钟。' },
+      { time: '12:20', title: '⑦ Queen Victoria Market · 维多利亚女王市场', note: '逛摊位、吃轻午餐，休息至 13:35；周六营业至 16:00。\n从皇家拱廊步行 1.19 公里，约 16 分钟。' },
+      { time: '13:55', title: '⑧ State Library Victoria · 州立图书馆', note: 'Swanston St 主入口，参观 Queen’s Hall、阅览区，至 14:45。5、6 层暂闭，出发前复核。\n从市场步行 900 米，约 12 分钟。' },
+      { time: '14:55', title: '⑨ Chinatown · 唐人街', note: '拍 Little Bourke Street 街景、补饮品，逛至 15:15。\n从图书馆步行 490 米，约 7 分钟。' },
+      { time: '15:30', title: '⑩ Parliament House · 议会大厦外观', note: '拍台阶与柱廊外观，至 15:50，不含内部导览。\n从唐人街步行 610 米，约 9 分钟。' },
+      { time: '16:05', title: '回酒店休息 · 放下购物袋', note: '放购物袋、补水休息，17:25 再出发。\n从议会大厦步行 730 米，约 10 分钟。' },
+      { time: '17:45', title: '⑪ 雅拉河 · Evan Walker Bridge', note: '拍河景、天际线，至 18:20；日落约 18:19。\n从酒店步行 820 米，约 11 分钟，经 Elizabeth St 公共地下步道（非地铁）。' },
+      { time: '18:25', title: '⑫ Southgate · 河岸晚餐', note: '河岸选店晚餐，含等位至 19:35，餐厅未预订。\n从观景桥步行 200 米，约 3 分钟。' },
+      { time: '19:55', title: '返回 The Victoria Hotel', note: '19:35 出发，回酒店休息，为翌日自驾留体力。\n从 Southgate 经步行桥、公共地下步道返回，1 公里约 14 分钟。' }
+    ]
+  },
   { date: '09.27', number: 3, city: '大洋路', shortTitle: 'Day 1 · 海岸线自驾', title: '大洋路 Day 1', summary: '墨尔本出发，经 Torquay、Bells Beach、Lorne 与 Apollo Bay，傍晚追十二门徒日落。', hotel: 'Apollo Bay Waterfront Motor Inn', hotelAddress: '173 Great Ocean Road, Apollo Bay VIC 3233', hotelImage: 'assets/photos/apollo-bay-waterfront-motor-inn/exterior.jpg', tags: ['自驾', '海岸线', '日落'], reminder: '沿途补给点有限，在 Torquay 或 Lorne 及时补水和用餐。', timeline: [{ time: '上午', title: '墨尔本出发', note: '前往 Torquay 与 Bells Beach' }, { time: '中午', title: 'Lorne / Apollo Bay', note: '午餐、补给与海边停留' }, { time: '傍晚', title: '十二门徒日落', note: '经 Otway 雨林，抵达 Port Campbell 一带' }] },
   { date: '09.28', number: 4, city: '大洋路 / 墨尔本', shortTitle: 'Day 2 · 峡谷与返程', title: '大洋路 Day 2', summary: '清晨看十二门徒与 Gibson Steps，途经洛克阿德峡谷、The Arch、London Bridge 后返回墨尔本。', hotel: '机场附近住宿', hotelAddress: '待定 · 墨尔本机场附近', tags: ['自驾', '峡谷', '返程'], reminder: '第二天是早班机，今晚务必确认机场交通或凌晨接送。', timeline: [{ time: '清晨', title: '十二门徒 / Gibson Steps', note: '避开人流，感受海岸晨光' }, { time: '上午', title: '洛克阿德峡谷', note: 'The Arch、London Bridge、Bay of Islands' }, { time: '下午', title: '返回墨尔本', note: '还车、整理行李并前往机场附近' }] },
   { date: '09.29', number: 5, city: '凯恩斯', shortTitle: '抵达热带海岸', title: '墨尔本 → 凯恩斯', summary: '06:25 飞往凯恩斯，09:50 抵达。寄存行李后在 Esplanade、Marina 与夜市轻松适应节奏。', hotel: 'DoubleTree by Hilton Hotel Cairns', hotelAddress: '121-123 Esplanade, Cairns City QLD 4870 Australia', hotelImage: 'assets/photos/doubletree-by-hilton-cairns/exterior.jpg', tags: ['国内航班', '抵达日', '休整'], reminder: '这天早起赶机，不建议安排跳伞或出海。', timeline: [{ time: '06:25', title: '墨尔本起飞', note: '国内航班前往凯恩斯' }, { time: '09:50', title: '抵达凯恩斯', note: '前往酒店寄存行李' }, { time: '下午', title: '海滨轻松漫步', note: 'Esplanade Lagoon、Marina 或夜市' }] },

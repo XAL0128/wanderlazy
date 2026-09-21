@@ -314,6 +314,8 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .scr-timeline-note { font-size: 12px; color: var(--muted); margin-top: 3px; }
 
 .scr-sticky { background: var(--card); padding: 18px 20px; box-shadow: 0 8px 18px rgba(43,27,14,.14); font-size: 15px; line-height: 1.6; color: var(--ink); display: flex; align-items: center; }
+.scr-note-map { display: block; width: 100%; }
+.scr-note-map img { display: block; width: 100%; height: auto; }
 
 /* ===== Spending：打孔卡片索引 ===== */
 .spend-master { position: relative; max-width: 420px; margin: 10px auto 40px; background: var(--card); padding: 22px 30px 26px; text-align: center; box-shadow: 0 12px 26px rgba(43,27,14,.18); }

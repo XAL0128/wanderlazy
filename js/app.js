@@ -10,6 +10,33 @@
   };
 
   const root = document.getElementById('app');
+  let itineraryEdgeObserver = null;
+
+  // 沿用原 SVG 的全部曲线控制点，只限制长卡片的纵向撕边深度。
+  // 280px 是紧凑行程卡的参考高度；正文、间距和卡片尺寸均不参与修改。
+  function preserveItineraryEdges() {
+    if (itineraryEdgeObserver) itineraryEdgeObserver.disconnect();
+    const source = document.querySelector('#wave-clip path').getAttribute('d');
+    const update = (card) => {
+      const { width, height } = card.getBoundingClientRect();
+      if (!width || !height) return;
+      const edgeHeight = Math.min(height, 280);
+      let coordinate = 0;
+      const path = source.replace(/\d*\.?\d+/g, (value) => {
+        const n = Number(value);
+        const result = coordinate++ % 2 === 0
+          ? n * width
+          : n < 0.5 ? n * edgeHeight : height - (1 - n) * edgeHeight;
+        return String(Math.round(result * 1000) / 1000);
+      });
+      card.style.clipPath = `path('${path.replace(/\s+/g, ' ')}')`;
+    };
+    // 本次只修复 Day 2 的长行程卡及地图 note，不影响其他日期和卡片。
+    if (state.activeTab !== 'itinerary' || currentTrip().days[state.dayIndex] !== days[1]) return;
+    const cards = root.querySelectorAll('.scr-timeline-card, .scr-sticky');
+    itineraryEdgeObserver = new ResizeObserver((entries) => entries.forEach(({ target }) => update(target)));
+    cards.forEach((card) => { update(card); itineraryEdgeObserver.observe(card); });
+  }
   let dayStep = null;
   const companionChecks = new Map();
   const COMPANION_GROUPS = [
@@ -252,7 +279,11 @@
           <div class="scr-card-label">✦ 今日安排</div>
           ${timelineHtml}
         </div>
-        <div class="scr-sticky">☀ ${esc(day.reminder).replace(/\n/g, '<br />')}</div>
+        <div class="scr-sticky">
+          <div>☀ ${esc(day.reminder).replace(/\n/g, '<br />')}
+          ${day.reminderImage ? `<a class="scr-note-map" href="${esc(day.reminderImage)}" target="_blank" rel="noopener noreferrer" aria-label="打开今日路线高清地图（新窗口）"><img src="${esc(day.reminderImage)}" alt="${esc(day.reminderImageAlt || '今日路线地图')}" width="2620" height="1940" loading="lazy" decoding="async" /></a>` : ''}
+          </div>
+        </div>
       </div>
     `;
   }
@@ -415,6 +446,7 @@
     else bodyHtml = renderGuide();
 
     root.innerHTML = renderNav() + bodyHtml;
+    preserveItineraryEdges();
 
     if (state.activeTab === 'itinerary') {
       const rail = document.getElementById('scr-dayrail');
