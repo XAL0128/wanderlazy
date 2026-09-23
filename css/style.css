@@ -254,6 +254,9 @@ button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .comp-info-meta { display: block; color: var(--folder-color); font-size: 11px; line-height: 1.6; margin-bottom: 3px; }
 .comp-info-list b { display: block; font-size: 14px; line-height: 1.55; }
 .comp-info-list p { color: var(--muted); font-size: 12px; line-height: 1.7; margin: 3px 0 0; overflow-wrap: anywhere; }
+.comp-major-transport .comp-info-meta { color: var(--ink); font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.comp-major-transport p { margin-top: 0; }
+.comp-major-transport p b { display: inline; font-size: 12px; font-weight: 700; }
 .comp-info-hotel { all: unset; box-sizing: border-box; display: block; width: 100%; color: var(--ink); text-align: left; }
 button.comp-info-hotel { cursor: pointer; }
 button.comp-info-hotel:focus-visible { outline: 2px solid var(--forest); outline-offset: 4px; }

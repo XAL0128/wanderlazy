@@ -343,7 +343,7 @@
       const count = items.filter((task) => checked.has(task.id)).length;
       const infoCount = group.id === 'transport'
         ? `${(content.majorTransport || []).length} 段行程`
-        : group.id === 'stay' ? `${staysFor(trip, true).length} 次入住` : '信息页';
+        : group.id === 'stay' ? `${staysFor(trip).length} 次入住` : '信息页';
       return `<details class="comp-folder comp-${group.id}" data-folder="${group.id}" data-trip="${trip.id}" ${openFolders.has(group.id) ? 'open' : ''}>
         <summary>
           <span class="comp-folder-number num-hand">${String(index + 1).padStart(2, '0')}</span>
@@ -378,10 +378,10 @@
     `;
   }
 
-  function staysFor(trip, includePending = false) {
+  function staysFor(trip) {
     const stays = [];
     trip.days.forEach((day, index) => {
-      if (!day.hotel || day.hotel === '—' || (!includePending && !hasHotelAddress(day))) return;
+      if (!hasHotelAddress(day)) return;
       const previous = stays[stays.length - 1];
       if (previous && previous.hotel === day.hotel && previous.hotelAddress === day.hotelAddress && previous.lastIndex === day.index - 1) {
         previous.lastDate = day.date;
@@ -396,10 +396,10 @@
     const trip = currentTrip();
     const content = companionByTrip[trip.id];
     if (group === 'transport') return `<ul class="comp-info-list comp-major-transport">
-      ${(content.majorTransport || []).map((item) => `<li><span class="comp-info-dot" aria-hidden="true">•</span><div><span class="comp-info-meta num">${esc(item.date)} · ${esc(item.time)}</span><b>${esc(item.service)}</b><p>${esc(item.route)}</p></div></li>`).join('')}
+      ${(content.majorTransport || []).map((item) => `<li><span class="comp-info-dot" aria-hidden="true">•</span><div><span class="comp-info-meta num">${esc(item.date)} · ${esc(item.time)}</span><p><b>${esc(item.service)}</b>，${esc(item.route)}</p></div></li>`).join('')}
     </ul>`;
     if (group === 'stay') return `<ul class="comp-info-list comp-stay-list">
-      ${staysFor(trip, true).map((stay) => `<li><span class="comp-info-dot" aria-hidden="true">•</span>${hasHotelAddress(stay) ? `<button type="button" class="comp-info-hotel" data-action="copy-hotel" data-index="${stay.index}" title="点击复制酒店地址" aria-label="复制 ${esc(stay.hotel)} 的地址：${esc(stay.hotelAddress)}">` : '<div class="comp-info-hotel">'}<span class="comp-info-meta num">${esc(stay.checkIn)}～${esc(stay.checkOut)} · 入住</span><b>${esc(stay.hotel)}</b><p>${esc(stay.hotelAddress)}</p>${hasHotelAddress(stay) ? '</button>' : '</div>'}</li>`).join('')}
+      ${staysFor(trip).map((stay) => `<li><span class="comp-info-dot" aria-hidden="true">•</span><button type="button" class="comp-info-hotel" data-action="copy-hotel" data-index="${stay.index}" title="点击复制酒店地址" aria-label="复制 ${esc(stay.hotel)} 的地址：${esc(stay.hotelAddress)}"><span class="comp-info-meta num">${esc(stay.checkIn)}～${esc(stay.checkOut)} · ${stay.lastIndex - stay.index + 1}晚</span><b>${esc(stay.hotel)}</b><p>${esc(stay.hotelAddress)}</p></button></li>`).join('')}
     </ul><p class="comp-copy-hint">点击已确定的酒店信息，即可复制地址。</p>`;
     return '';
   }
