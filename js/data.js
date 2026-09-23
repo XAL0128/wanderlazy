@@ -216,11 +216,21 @@ const companionByTrip = {
   [trip.id]: {
     checklistOnly: true,
     groups: [
+      { id: "transport", name: "大交通", en: "TRANSPORT", note: "高铁 · 航班 · 往返", kind: "info" },
+      { id: "stay", name: "酒店", en: "HOTELS", note: "入住时间 · 酒店地址", kind: "info" },
       { id: "documents", name: "证件资料", en: "DOCUMENTS", note: "证件 · 纸质备份" },
       { id: "electronics", name: "电子产品", en: "ELECTRONICS", note: "充电 · 通讯 · 电器" },
       { id: "daily", name: "日用品", en: "DAILY ESSENTIALS", note: "洗护 · 护肤 · 彩妆" },
       { id: "medicine", name: "药品", en: "MEDICINE", note: "随身药品" },
       { id: "clothes", name: "衣服", en: "CLOTHING", note: "鞋履 · 外套" }
+    ],
+    majorTransport: [
+      { date: "9.25", time: "06:32/07:22～07:46", service: "G6501", route: "深圳北/广州南～香港西九龙" },
+      { date: "9.25", time: "11:20～22:15", service: "国泰航空 CX163", route: "香港国际机场T1～墨尔本机场T2" },
+      { date: "9.29", time: "06:25～09:50", service: "维珍澳洲航空 VA1291", route: "墨尔本图拉马莱恩机场T3～凯恩斯机场T2" },
+      { date: "10.3", time: "19:15～22:10", service: "维珍澳洲航空 VA1428", route: "凯恩斯机场T2～悉尼金斯福德史密斯机场T2" },
+      { date: "10.7", time: "08:40～15:10", service: "国泰航空 CX110", route: "悉尼金斯福德史密斯机场T1～香港国际机场T1" },
+      { date: "10.7", time: "19:00～19:18/20:00", service: "G6514", route: "香港西九龙～深圳北/广州南" }
     ],
     checks: {
       documents: [

@@ -338,17 +338,21 @@
     const completed = tasks.filter((task) => checked.has(task.id)).length;
     const openFolders = state.openFolders[trip.id] || (state.openFolders[trip.id] = new Set([(content.groups || COMPANION_GROUPS)[0].id]));
     const cardsHtml = (content.groups || COMPANION_GROUPS).map((group, index) => {
-      const items = content.checks[group.id];
+      const isInfo = group.kind === 'info';
+      const items = content.checks[group.id] || [];
       const count = items.filter((task) => checked.has(task.id)).length;
+      const infoCount = group.id === 'transport'
+        ? `${(content.majorTransport || []).length} 段行程`
+        : group.id === 'stay' ? `${staysFor(trip, true).length} 次入住` : '信息页';
       return `<details class="comp-folder comp-${group.id}" data-folder="${group.id}" data-trip="${trip.id}" ${openFolders.has(group.id) ? 'open' : ''}>
         <summary>
           <span class="comp-folder-number num-hand">${String(index + 1).padStart(2, '0')}</span>
           <span class="comp-folder-title"><strong>${group.name}</strong><small>${group.en}</small></span>
           <span class="comp-folder-note">${group.note}</span>
-          <span class="comp-folder-count" data-group-count="${group.id}">${count} / ${items.length} 已核对</span>
+          <span class="comp-folder-count${isInfo ? ' comp-folder-info-label' : ''}"${isInfo ? '' : ` data-group-count="${group.id}"`}>${isInfo ? infoCount : `${count} / ${items.length} 已核对`}</span>
           <span class="comp-folder-toggle" aria-hidden="true"></span>
         </summary>
-        ${content.checklistOnly ? `<div class="comp-folder-body comp-list-body">
+        ${isInfo ? `<div class="comp-folder-body comp-info-body">${renderCompanionInfo(group.id)}</div>` : content.checklistOnly ? `<div class="comp-folder-body comp-list-body">
           ${items.map((task) => `<label class="comp-check"><input type="checkbox" data-comp-check="${task.id}" ${checked.has(task.id) ? 'checked' : ''}><span><b>${esc(task.title)}</b></span></label>`).join('')}
         </div>` : `        <div class="comp-folder-body">
           <section class="comp-checks"><h2><span>出发前</span> 核对一下</h2>
@@ -374,17 +378,30 @@
     `;
   }
 
-  function staysFor(trip) {
+  function staysFor(trip, includePending = false) {
     const stays = [];
-    trip.days.forEach((day) => {
-      if (!hasHotelAddress(day)) return;
+    trip.days.forEach((day, index) => {
+      if (!day.hotel || day.hotel === '—' || (!includePending && !hasHotelAddress(day))) return;
       const previous = stays[stays.length - 1];
       if (previous && previous.hotel === day.hotel && previous.hotelAddress === day.hotelAddress && previous.lastIndex === day.index - 1) {
         previous.lastDate = day.date;
         previous.lastIndex = day.index;
-      } else stays.push({ ...day, lastDate: day.date, lastIndex: day.index });
+        previous.checkOut = trip.days[index + 1] ? trip.days[index + 1].date : trip.endDate;
+      } else stays.push({ ...day, checkIn: day.date, checkOut: trip.days[index + 1] ? trip.days[index + 1].date : trip.endDate, lastDate: day.date, lastIndex: day.index });
     });
     return stays;
+  }
+
+  function renderCompanionInfo(group) {
+    const trip = currentTrip();
+    const content = companionByTrip[trip.id];
+    if (group === 'transport') return `<ul class="comp-info-list comp-major-transport">
+      ${(content.majorTransport || []).map((item) => `<li><span class="comp-info-dot" aria-hidden="true">•</span><div><span class="comp-info-meta num">${esc(item.date)} · ${esc(item.time)}</span><b>${esc(item.service)}</b><p>${esc(item.route)}</p></div></li>`).join('')}
+    </ul>`;
+    if (group === 'stay') return `<ul class="comp-info-list comp-stay-list">
+      ${staysFor(trip, true).map((stay) => `<li><span class="comp-info-dot" aria-hidden="true">•</span>${hasHotelAddress(stay) ? `<button type="button" class="comp-info-hotel" data-action="copy-hotel" data-index="${stay.index}" title="点击复制酒店地址" aria-label="复制 ${esc(stay.hotel)} 的地址：${esc(stay.hotelAddress)}">` : '<div class="comp-info-hotel">'}<span class="comp-info-meta num">${esc(stay.checkIn)}～${esc(stay.checkOut)} · 入住</span><b>${esc(stay.hotel)}</b><p>${esc(stay.hotelAddress)}</p>${hasHotelAddress(stay) ? '</button>' : '</div>'}</li>`).join('')}
+    </ul><p class="comp-copy-hint">点击已确定的酒店信息，即可复制地址。</p>`;
+    return '';
   }
 
   function renderStayCard() {
@@ -428,6 +445,7 @@
     progress.querySelector('i').style.width = `${completed / tasks.length * 100}%`;
     (content.groups || COMPANION_GROUPS).forEach((group) => {
       const items = content.checks[group.id];
+      if (!items) return;
       root.querySelector(`[data-group-count="${group.id}"]`).textContent = `${items.filter((task) => checked.has(task.id)).length} / ${items.length} 已核对`;
     });
   }
