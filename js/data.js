@@ -225,7 +225,7 @@ const companionByTrip = {
       { id: "clothes", name: "衣服", en: "CLOTHING", note: "鞋履 · 外套" }
     ],
     majorTransport: [
-      { date: "9.25", time: "06:32/07:22～07:46", service: "G6501", route: "深圳北/广州南～香港西九龙" },
+      { date: "9.25", time: "06:32/07:22～07:46", service: "G6501", route: "广州南/深圳北～香港西九龙" },
       { date: "9.25", time: "11:20～22:15", service: "国泰航空 CX163", route: "香港国际机场T1～墨尔本机场T2" },
       { date: "9.29", time: "06:25～09:50", service: "维珍澳洲航空 VA1291", route: "墨尔本图拉马莱恩机场T3～凯恩斯机场T2" },
       { date: "10.3", time: "19:15～22:10", service: "维珍澳洲航空 VA1428", route: "凯恩斯机场T2～悉尼金斯福德史密斯机场T2" },

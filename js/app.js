@@ -400,7 +400,7 @@
     </ul>`;
     if (group === 'stay') return `<ul class="comp-info-list comp-stay-list">
       ${staysFor(trip).map((stay) => `<li><span class="comp-info-dot" aria-hidden="true">•</span><button type="button" class="comp-info-hotel" data-action="copy-hotel" data-index="${stay.index}" title="点击复制酒店地址" aria-label="复制 ${esc(stay.hotel)} 的地址：${esc(stay.hotelAddress)}"><span class="comp-info-meta num">${esc(stay.checkIn)}～${esc(stay.checkOut)} · ${stay.lastIndex - stay.index + 1}晚</span><b>${esc(stay.hotel)}</b><p>${esc(stay.hotelAddress)}</p></button></li>`).join('')}
-    </ul><p class="comp-copy-hint">点击已确定的酒店信息，即可复制地址。</p>`;
+    </ul>`;
     return '';
   }
 
