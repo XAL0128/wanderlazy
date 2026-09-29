@@ -60,7 +60,7 @@ const days = [
   { date: '10.03', number: 9, city: '凯恩斯 / 悉尼', shortTitle: '机动休整 · 晚飞悉尼', title: '凯恩斯 → 悉尼', summary: '上午预留给跳伞或天气备选，下午取行李前往机场，19:10 飞抵悉尼。', hotel: 'Meriton Suites Mascot Central', hotelAddress: '8 Jackson Drive, Mascot NSW 2020', hotelImage: 'assets/photos/meriton-suites-mascot-central/exterior.jpg', tags: ['机动日', '国内航班', '晚抵达'], reminder: '22:05 抵达悉尼后不安排夜间活动，直接入住。', timeline: [{ time: '上午', title: '机动 / 休整', note: '作为跳伞天气备选，或市区轻松补给' }, { time: '下午', title: '前往凯恩斯机场', note: '取行李、预留充足值机时间' }, { time: '19:10', title: '飞往悉尼', note: '22:05 抵达后前往酒店' }] },
   { date: '10.04', number: 10, city: '悉尼', shortTitle: '海港观鲸', title: '悉尼观鲸日', summary: '从 Circular Quay 搭乘 ORCA 出海观鲸，官方产品 11:00 出发，实付 302.47 澳元。', hotel: 'Meriton Suites Mascot Central', hotelAddress: '8 Jackson Drive, Mascot NSW 2020', hotelImage: 'assets/photos/meriton-suites-mascot-central/exterior.jpg', tags: ['观鲸', '悉尼港', '出海'], reminder: '出海前不要吃太撑；晕船体质提前服用晕船药。', timeline: [{ time: '上午', title: '前往 Circular Quay', note: '预留码头确认与登船时间' }, { time: '11:00', title: 'ORCA 观鲸出发', note: '海上观鲸体验' }, { time: '下午', title: '海港慢游', note: '根据体力安排环形码头或市区咖啡' }] },
   { date: '10.05', number: 11, city: '悉尼', shortTitle: '日出皮划艇与慢时光', title: '悉尼港日出皮划艇', summary: '清晨参加悉尼港日出皮划艇，上午回酒店补觉，下午可安排咖啡、购物与海港散步。', hotel: 'Meriton Suites Mascot Central', hotelAddress: '8 Jackson Drive, Mascot NSW 2020', hotelImage: 'assets/photos/meriton-suites-mascot-central/exterior.jpg', tags: ['皮划艇', '日出', '休整'], reminder: '带防水袋、速干衣和保暖外套，前一晚尽量早睡。', timeline: [{ time: '清晨', title: '日出皮划艇', note: '集合点以产品安排为准' }, { time: '上午', title: '回酒店休息', note: '补眠与整理衣物' }, { time: '下午', title: '自由活动', note: '咖啡、购物、海港散步或完全休整' }] },
-  { date: '10.06', number: 12, city: '悉尼', shortTitle: '留白的一天', title: '悉尼休息 / 机动日', summary: '睡到自然醒，完成市区补给、购物和整理行李；可选 Bondi、Manly Ferry、QVB 或海港咖啡。', hotel: '机场附近住宿', hotelAddress: '待定 · 悉尼机场附近', tags: ['机动日', '购物', '整理行李'], reminder: '次日早班国际航班，不建议安排蓝山等远距离项目。', timeline: [{ time: '上午', title: '自然醒与补给', note: '整理行李、购买伴手礼' }, { time: '下午', title: '轻松备选', note: 'Bondi 短途散步 / Manly Ferry / QVB' }, { time: '晚上', title: '前往机场附近', note: '确认次日出发时间与证件' }] },
+  { date: '10.06', number: 12, city: '悉尼', shortTitle: '留白的一天', title: '悉尼休息 / 机动日', summary: '睡到自然醒，完成市区补给、购物和整理行李；可选 Bondi、Manly Ferry、QVB 或海港咖啡。', hotel: 'Meriton Suites Sydney Airport', hotelAddress: '200 Coward St, Mascot NSW 2020', tags: ['机动日', '购物', '整理行李'], reminder: '次日早班国际航班，不建议安排蓝山等远距离项目。', timeline: [{ time: '上午', title: '自然醒与补给', note: '整理行李、购买伴手礼' }, { time: '下午', title: '轻松备选', note: 'Bondi 短途散步 / Manly Ferry / QVB' }, { time: '晚上', title: '前往机场附近', note: '确认次日出发时间与证件' }] },
   { date: '10.07', number: 13, city: '悉尼 / 返程', shortTitle: '带着海风回家', title: '悉尼 → 香港', summary: '08:40 从悉尼起飞，15:10 抵达香港。国际航班建议提前至少 3 小时抵达机场。', hotel: '—', hotelAddress: '旅程结束', tags: ['国际航班', '返程', '收尾'], reminder: '护照、签证、航班订单与退税材料提前放在随身包。', timeline: [{ time: '清晨', title: '前往悉尼机场', note: '预留值机、安检与出境时间' }, { time: '08:40', title: '悉尼起飞', note: '国际航班返程' }, { time: '15:10', title: '抵达香港', note: '国庆澳洲游圆满收尾' }] }
 ];
 
@@ -106,17 +106,17 @@ const trips = [trip, graduationTrip];
 
 const travellerCount = 2;
 const australiaExpenseDefinitions = [
-  { id: 'accommodation', name: '住宿', color: '#ba6e48', icon: 'assets/icons/expense-stay-transparent-v1.png', details: [{ title: '墨尔本', note: 'The Victoria Hotel · 2晚', amount: 2348 }, { title: '阿波罗湾', note: 'Apollo Bay Waterfront Motor Inn · 1晚', amount: 975.98 }, { title: '凯恩斯', note: 'DoubleTree by Hilton Hotel Cairns · 4晚', amount: 5536.93 }, { title: '悉尼', note: 'Meriton Suites Mascot Central · 3晚（还没a）', amount: 4104 }] },
+  { id: 'accommodation', name: '住宿', color: '#ba6e48', icon: 'assets/icons/expense-stay-transparent-v1.png', details: [{ title: '墨尔本', note: 'The Victoria Hotel · 2晚', amount: 2348 }, { title: '阿波罗湾', note: 'Apollo Bay Waterfront Motor Inn · 1晚', amount: 975.98 }, { title: '凯恩斯', note: 'DoubleTree by Hilton Hotel Cairns · 4晚', amount: 5536.93 }, { title: '悉尼', note: 'Meriton Suites Mascot Central · 3晚（还没a）', amount: 4104 }, { title: '悉尼', note: 'Meriton Suites Sydney Airport · 1晚（还没a）', amount: 910 }] },
   { id: 'transport', name: '交通', color: '#375342', icon: 'assets/icons/expense-transport-transparent-v1.png', details: [{ title: '机票', note: '往返机票和澳洲境内机票', amount: 9368, quantity: travellerCount, suffix: '/人' }, { title: '租车', note: '租车两天+保险（还没a）', amount: 1386.64 }] },
   { id: 'activities', name: '活动项目', color: '#c49538', icon: 'assets/icons/expense-ticket-transparent-v1.png', details: [{ title: '凯恩斯跳伞', note: '携程预订', amount: 3250 }, { title: '魔幻丽礁号', note: '趣玩预订', amount: 2744 }, { title: '塔利河漂流', note: '趣玩预订', amount: 2076 }, { title: '悉尼观鲸', note: 'Ocean Extreme官网预订', amount: 1436.61 }, { title: '日出皮划艇', note: 'Ozpaddle Sydney官网预订', amount: 1529.96 }, { title: '悉尼歌剧院30分钟导览游', note: '飞猪预订', amount: 309.68 }] },
   { id: 'food', name: '美食', color: '#f0cf98', icon: 'assets/icons/expense-food-transparent-v1.png', details: [
     { title: '便利店', amount: 227.76 },
-    { title: 'cafe victoria', amount: 311.86 },
-    { title: 'coco cafe', amount: 591.37 },
-    { title: 'shelter cafe', amount: 308.74 },
-    { title: 'IMM THAI CAFE', amount: 266.23 },
-    { title: 'croc bar', amount: 221.82 },
-    { title: 'yo-phoria', amount: 32 }
+    { title: 'Cafe Victoria', amount: 311.86 },
+    { title: 'Coco Cafe & Restaurant', amount: 591.37 },
+    { title: 'THE CROC BAR', amount: 308.74 },
+    { title: 'SHELTER CAFE Apollo Bay', amount: 266.23 },
+    { title: 'THE CROC BAR', amount: 221.82 },
+    { title: 'Yo-Phoria', amount: 32 }
   ] },
   { id: 'shopping', name: '购物', color: '#c8bd83', icon: 'assets/icons/expense-shopping-transparent-v1.png', details: [
     { title: 'woolworths', amount: 127.77 },
