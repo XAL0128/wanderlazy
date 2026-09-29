@@ -113,8 +113,8 @@ const australiaExpenseDefinitions = [
     { title: '便利店', amount: 227.76 },
     { title: 'Cafe Victoria', amount: 311.86 },
     { title: 'Coco Cafe & Restaurant', amount: 591.37 },
-    { title: 'THE CROC BAR', amount: 308.74 },
-    { title: 'SHELTER CAFE Apollo Bay', amount: 266.23 },
+    { title: 'SHELTER CAFE Apollo Bay', amount: 308.74 },
+    { title: 'IMM THAI CAFE', amount: 266.23 },
     { title: 'THE CROC BAR', amount: 221.82 },
     { title: 'Yo-Phoria', amount: 32 }
   ] },
