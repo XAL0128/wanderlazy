@@ -106,9 +106,9 @@ const trips = [trip, graduationTrip];
 
 const travellerCount = 2;
 const australiaExpenseDefinitions = [
-  { id: 'accommodation', name: '住宿', color: '#ba6e48', icon: 'assets/icons/expense-stay-transparent-v1.png', details: [{ title: '墨尔本', note: 'The Victoria Hotel · 2晚', amount: 2348 }, { title: '阿波罗湾', note: 'Apollo Bay Waterfront Motor Inn · 1晚', amount: 975.98 }, { title: '凯恩斯', note: 'DoubleTree by Hilton Hotel Cairns · 4晚', amount: 5536.93 }, { title: '悉尼', note: 'Meriton Suites Mascot Central · 3晚（还没a）', amount: 4104 }, { title: '悉尼', note: 'Meriton Suites Sydney Airport · 1晚（还没a）', amount: 910 }] },
+  { id: 'accommodation', name: '住宿', color: '#ba6e48', icon: 'assets/icons/expense-stay-transparent-v1.png', details: [{ title: '墨尔本', note: 'The Victoria Hotel · 2晚', amount: 2348 }, { title: '阿波罗湾', note: 'Apollo Bay Waterfront Motor Inn · 1晚', amount: 975.98 }, { title: '凯恩斯', note: 'DoubleTree by Hilton Hotel Cairns · 4晚 · 金卡会员 35', amount: 5571.93 }, { title: '悉尼', note: 'Meriton Suites Mascot Central · 3晚（还没a）', amount: 4104 }, { title: '悉尼', note: 'Meriton Suites Sydney Airport · 1晚（还没a）', amount: 910 }] },
   { id: 'transport', name: '交通', color: '#375342', icon: 'assets/icons/expense-transport-transparent-v1.png', details: [{ title: '机票', note: '往返机票和澳洲境内机票', amount: 9368, quantity: travellerCount, suffix: '/人' }, { title: '租车', note: '租车两天+保险（还没a）', amount: 1386.64 }] },
-  { id: 'activities', name: '活动项目', color: '#c49538', icon: 'assets/icons/expense-ticket-transparent-v1.png', details: [{ title: '凯恩斯跳伞', note: '携程预订', amount: 3250 }, { title: '魔幻丽礁号', note: '趣玩预订', amount: 2744 }, { title: '塔利河漂流', note: '趣玩预订', amount: 2076 }, { title: '悉尼观鲸', note: 'Ocean Extreme官网预订', amount: 1436.61 }, { title: '日出皮划艇', note: 'Ozpaddle Sydney官网预订', amount: 1529.96 }, { title: '悉尼歌剧院30分钟导览游', note: '飞猪预订', amount: 309.68 }] },
+  { id: 'activities', name: '活动项目', color: '#c49538', icon: 'assets/icons/expense-ticket-transparent-v1.png', details: [{ title: '凯恩斯跳伞', note: '携程预订 · 视频&照片 1703.35', amount: 4953.35 }, { title: '魔幻丽礁号', note: '趣玩预订 · 租大疆Action4 417.65', amount: 3161.65 }, { title: '塔利河漂流', note: '趣玩预订', amount: 2076 }, { title: '悉尼观鲸', note: 'Ocean Extreme官网预订', amount: 1436.61 }, { title: '日出皮划艇', note: 'Ozpaddle Sydney官网预订', amount: 1529.96 }, { title: '悉尼歌剧院30分钟导览游', note: '飞猪预订', amount: 309.68 }] },
   { id: 'food', name: '美食', color: '#f0cf98', icon: 'assets/icons/expense-food-transparent-v1.png', details: [
     { title: '便利店', amount: 227.76 },
     { title: 'Cafe Victoria', amount: 311.86 },
@@ -116,10 +116,14 @@ const australiaExpenseDefinitions = [
     { title: 'SHELTER CAFE Apollo Bay', amount: 308.74 },
     { title: 'IMM THAI CAFE', amount: 266.23 },
     { title: 'THE CROC BAR', amount: 221.82 },
-    { title: 'Yo-Phoria', amount: 32 }
+    { title: 'Yo-Phoria', amount: 64 },
+    { title: 'Laundro Lounge', amount: 170.07 },
+    { title: 'Noodle Party', amount: 193.53 },
+    { title: 'Sweet Tea', amount: 80.24 },
+    { title: 'PHO VIET', amount: 187.71 }
   ] },
   { id: 'shopping', name: '购物', color: '#c8bd83', icon: 'assets/icons/expense-shopping-transparent-v1.png', details: [
-    { title: 'woolworths', amount: 127.77 },
+    { title: 'woolworths', amount: 262.21 },
     { title: '洗发水', amount: 177.95 },
     { title: '阿波罗湾咖啡', amount: 349.66 },
     { title: '晕车药', amount: 51.87 }
