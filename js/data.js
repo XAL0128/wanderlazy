@@ -132,7 +132,7 @@ const australiaExpenseDefinitions = [
     { title: '阿波罗湾咖啡', amount: 349.66 },
     { title: '晕车药', amount: 51.87 },
     { title: 'kit', amount: 598.83 },
-    { title: 'herbsofgold钙片', amount: 1005 }
+    { title: 'herbsofgold钙片', amount: 1005, quantity: travellerCount, suffix: '/人' }
   ] }
 ];
 
