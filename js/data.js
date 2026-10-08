@@ -131,7 +131,8 @@ const australiaExpenseDefinitions = [
     { title: '洗发水', amount: 177.95 },
     { title: '阿波罗湾咖啡', amount: 349.66 },
     { title: '晕车药', amount: 51.87 },
-    { title: 'kit', amount: 598.83 }
+    { title: 'kit', amount: 598.83 },
+    { title: 'herbsofgold钙片', amount: 1005 }
   ] }
 ];
 
